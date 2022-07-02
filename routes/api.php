@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MovieController;
 use App\Http\Controllers\RegisterController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register/create', [RegisterController::class, 'store'])->name('register.create');
+Route::post('/register/create', [RegisterController::class, 'store'])->name('register.api');
+Route::post('/login', [AuthController::class, 'store'])->name('login.api');
+Route::get('movies', [MovieController::class, 'index'])->name('movies.api');
