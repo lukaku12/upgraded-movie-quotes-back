@@ -19,7 +19,7 @@ class QuoteFactory extends Factory
 	{
 		return [
 			'title'     => ['en' => $this->faker->sentence(), 'ka' => 'ფილმის ფრაზა'],
-			'thumbnail' => $this->faker->image('public/storage/thumbnails', 1920, 1080, null, false),
+			'thumbnail' => 'thumbnail.png',
 			'movie_id'  => Movie::factory(),
 		];
 	}
