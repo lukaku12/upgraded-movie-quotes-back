@@ -17,7 +17,7 @@ class MovieFactory extends Factory
 	public function definition()
 	{
 		$title = $this->faker->sentence();
-		$slug = strtolower(str_replace('.', ' ', str_replace(' ', '-', $title)));
+		$slug = strtolower(str_replace('.', '', str_replace(' ', '-', $title)));
 		return [
 			'title' => ['en' => $title, 'ka' => 'ფილმის სახელი'],
 			'slug'  => $slug,

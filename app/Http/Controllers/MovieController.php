@@ -11,15 +11,18 @@ class MovieController extends Controller
 		$movies = Movie::all();
 		foreach ($movies as $movie)
 		{
-			$movie['number_of_quotes'] = count($movie->quotes);
 			$movie['thumbnail'] = $movie->quotes[0]->thumbnail;
 		}
-		return $movies;
+		return response()->json($movies);
 	}
 
-	public function show($slug): array
+	public function show($slug)
 	{
-		$movie = Movie::where('slug', $slug)->first();
-		return ['movie' => $movie, 'quotes' => $movie->quotes];
+		if (Movie::where('slug', $slug)->exists())
+		{
+			$movie = Movie::where('slug', $slug)->first();
+			return response()->json(['movie' => $movie, 'quotes' => $movie->quotes]);
+		}
+		return response(['error' => true, 'error-msg' => 'Not found'], 404);
 	}
 }
