@@ -2,24 +2,78 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\AuthRequest;
-use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-	public function store(AuthRequest $request)
+	/**
+	 * Register user with given credentials
+	 */
+	public function register(RegisterRequest $request): JsonResponse
 	{
-		if (!auth()->attempt(
-			['email' => $request->email, 'password' => $request->password],
-			$request->has('remember_device')
-		))
-		{
-			throw ValidationException::withMessages([
-				'password' => 'Your provided credentials could not be verified',
-			]);
-		}
-		session()->regenerate();
+		User::create([
+			'name'     => $request->name,
+			'email'    => $request->email,
+			'password' => Hash::make($request->password),
+		]);
 
-		return response('successfull', 200);
+		return response()->json('User successfuly registered!', 200);
+	}
+
+	/**
+	 * Get a JWT via given credentials.
+	 */
+	public function login(AuthRequest $request): JsonResponse
+	{
+		$token = auth()->attempt($request->all());
+
+		if (!$token)
+		{
+			return response()->json(['error' => 'User Does not exist!'], 404);
+		}
+
+		return $this->respondWithToken($token);
+	}
+
+	/**
+	 * Get the authenticated User.
+	 */
+	public function user(): JsonResponse
+	{
+		return response()->json(auth()->user(), 200);
+	}
+
+	/**
+	 * Log the user out (Invalidate the token).
+	 */
+	public function logout(): JsonResponse
+	{
+		auth()->logout();
+
+		return response()->json(['message' => 'Successfully logged out']);
+	}
+
+	/**
+	 * Refresh a token.
+	 */
+	public function refresh(): JsonResponse
+	{
+		return $this->respondWithToken(auth()->refresh());
+	}
+
+	/**
+	 * Get the token array structure.
+	 */
+	protected function respondWithToken(string $token): JsonResponse
+	{
+		return response()->json([
+			'access_token' => $token,
+			'token_type'   => 'bearer',
+			'expires_in'   => auth()->factory()->getTTL() * 60,
+		]);
 	}
 }
