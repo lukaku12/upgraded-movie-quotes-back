@@ -48,10 +48,15 @@ Route::group(['middleware' => ['web']], function () {
 
 Route::middleware(['auth:api'])->group(function () {
 	Route::post('/logout', [AuthController::class, 'logout'])->name('logout.api');
+
 	Route::get('/user', [UserController::class, 'index'])->name('user.api');
+
 	Route::get('/movies', [MovieController::class, 'index'])->name('movies.api');
 	Route::get('/movies/{slug}', [MovieController::class, 'show'])->name('movies.api');
+
+	Route::post('/movies/{slug}/quote/add', [QuoteController::class, 'addQuote'])->name('add-quote.api');
 	Route::get('/movies/{slug}/quote/{id}', [QuoteController::class, 'show'])->name('quote.api');
 	Route::post('/movies/{slug}/quote/{id}', [QuoteController::class, 'update'])->name('quote-update.api');
-	Route::post('/quotes/create', [QuoteController::class, 'store'])->name('quotes-create.api');
+	Route::post('/quotes/create', [QuoteController::class, 'store'])->name('quote-create.api');
+	Route::delete('/movies/{slug}/quote/{id}', [QuoteController::class, 'destroy'])->name('quote-remove.api');
 });

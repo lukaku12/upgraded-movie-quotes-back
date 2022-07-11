@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddQuoteRequest;
 use App\Http\Requests\UpdateQuoteRequest;
 use App\Models\Quote;
 
@@ -11,6 +12,21 @@ class QuoteController extends Controller
 	{
 		$quote = Quote::where('id', $id)->first();
 		return response()->json($quote);
+	}
+
+	public function addQuote($slug, AddQuoteRequest $request)
+	{
+		$data = [
+			'title'  => [
+				'en' => $request->title_en,
+				'ka' => $request->title_ka,
+			],
+			'movie_id'    => $request->movie_id,
+		];
+
+		Quote::create($data);
+
+		return response()->json('Quote Added successfuly!', 200);
 	}
 
 	public function update($quote, $id, UpdateQuoteRequest $request)
@@ -32,5 +48,13 @@ class QuoteController extends Controller
 		$selected_quote->update($data);
 
 		return response()->json('Quote updated successfuly!', 200);
+	}
+
+	public function destroy($slug, $id)
+	{
+		$quote = Quote::where('id', $id)->first();
+		$quote->delete();
+
+		return response()->json('Quote deleted successfuly!', 200);
 	}
 }
