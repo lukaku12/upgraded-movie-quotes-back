@@ -16,10 +16,11 @@ class MovieFactory extends Factory
 	 */
 	public function definition()
 	{
+		$fakerKa = \Faker\Factory::create('ka_GE');
 		$title = $this->faker->sentence();
 		$slug = strtolower(str_replace('.', '', str_replace(' ', '-', $title)));
 		return [
-			'title' => ['en' => $title, 'ka' => 'ფილმის სახელი'],
+			'title' => ['en' => $this->faker->sentence(), 'ka' => $fakerKa->realText(30)],
 			'slug'  => $slug,
 		];
 	}
