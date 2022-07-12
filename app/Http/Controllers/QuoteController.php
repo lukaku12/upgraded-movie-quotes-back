@@ -5,12 +5,21 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddQuoteRequest;
 use App\Http\Requests\UpdateQuoteRequest;
 use App\Models\Quote;
+use App\Models\User;
 
 class QuoteController extends Controller
 {
 	public function index()
 	{
-		$quotes = Quote::with(['movie', 'user'])->orderBy('created_at', 'DESC')->get();
+		$quotes = Quote::with(['movie', 'user', 'comments'])->orderBy('created_at', 'DESC')->get();
+		foreach ($quotes as $quote)
+		{
+			foreach ($quote->comments as $comment)
+			{
+				$commentAuthor = User::where('id', $comment->user_id)->get('username');
+				$comment['username'] = $commentAuthor[0]->username;
+			}
+		}
 		return response()->json($quotes, 200);
 	}
 

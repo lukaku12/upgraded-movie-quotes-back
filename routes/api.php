@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\RegisterController;
@@ -46,7 +47,7 @@ Route::group(['middleware' => ['web']], function () {
 	});
 });
 
-Route::middleware(['auth:api'])->group(function () {
+//Route::middleware(['auth:api'])->group(function () {
 	Route::post('/logout', [AuthController::class, 'logout'])->name('logout.api');
 
 	Route::get('/user', [UserController::class, 'index'])->name('user.api');
@@ -55,9 +56,10 @@ Route::middleware(['auth:api'])->group(function () {
 	Route::get('/movies/{slug}', [MovieController::class, 'show'])->name('movies.api');
 
 	Route::get('/quotes', [QuoteController::class, 'index'])->name('quotes.api');
+	Route::post('/comment/add', [CommentController::class, 'index'])->name('add-comment.api');
 	Route::post('/movies/{slug}/quote/add', [QuoteController::class, 'addQuote'])->name('add-quote.api');
 	Route::get('/movies/{slug}/quote/{id}', [QuoteController::class, 'show'])->name('quote.api');
 	Route::post('/movies/{slug}/quote/{id}', [QuoteController::class, 'update'])->name('quote-update.api');
 	Route::post('/quotes/create', [QuoteController::class, 'store'])->name('quote-create.api');
 	Route::delete('/movies/{slug}/quote/{id}', [QuoteController::class, 'destroy'])->name('quote-remove.api');
-});
+//});

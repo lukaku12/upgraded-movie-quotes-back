@@ -21,7 +21,7 @@ class QuoteFactory extends Factory
 		$fakerKa = \Faker\Factory::create('ka_GE');
 		return [
 			'title'     => ['en' => $this->faker->sentence(), 'ka' => $fakerKa->realText(30)],
-			'thumbnail' => 'thumbnail.png',
+			'thumbnail' => 'Rectangle1.png',
 			'movie_id'  => Movie::factory(),
 			'user_id'   => User::factory(),
 		];
