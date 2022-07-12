@@ -54,6 +54,7 @@ Route::middleware(['auth:api'])->group(function () {
 	Route::get('/movies', [MovieController::class, 'index'])->name('movies.api');
 	Route::get('/movies/{slug}', [MovieController::class, 'show'])->name('movies.api');
 
+	Route::get('/quotes', [QuoteController::class, 'index'])->name('quotes.api');
 	Route::post('/movies/{slug}/quote/add', [QuoteController::class, 'addQuote'])->name('add-quote.api');
 	Route::get('/movies/{slug}/quote/{id}', [QuoteController::class, 'show'])->name('quote.api');
 	Route::post('/movies/{slug}/quote/{id}', [QuoteController::class, 'update'])->name('quote-update.api');

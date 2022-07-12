@@ -8,6 +8,12 @@ use App\Models\Quote;
 
 class QuoteController extends Controller
 {
+	public function index()
+	{
+		$quotes = Quote::with(['movie', 'user'])->orderBy('created_at', 'DESC')->get();
+		return response()->json($quotes, 200);
+	}
+
 	public function show($slug, $id)
 	{
 		$quote = Quote::where('id', $id)->first();
@@ -22,6 +28,7 @@ class QuoteController extends Controller
 				'ka' => $request->title_ka,
 			],
 			'movie_id'    => $request->movie_id,
+			'user_id'     => auth()->user()->id,
 		];
 
 		Quote::create($data);
@@ -37,6 +44,7 @@ class QuoteController extends Controller
 				'en' => $request->title_en,
 				'ka' => $request->title_ka,
 			],
+			'user_id'     => auth()->user()->id,
 			'movie_id'    => $request->movie_id,
 		];
 		if ($request->thumbnail !== null)
