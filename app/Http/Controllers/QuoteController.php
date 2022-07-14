@@ -11,7 +11,7 @@ class QuoteController extends Controller
 {
 	public function index()
 	{
-		$quotes = Quote::with(['movie', 'user', 'comments'])->orderBy('created_at', 'DESC')->get();
+		$quotes = Quote::with(['movie', 'user', 'comments', 'likes'])->orderBy('created_at', 'DESC')->get();
 		foreach ($quotes as $quote)
 		{
 			foreach ($quote->comments as $comment)
