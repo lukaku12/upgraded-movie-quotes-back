@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
@@ -65,4 +66,6 @@ Route::middleware(['auth:api'])->group(function () {
 	Route::post('/movies/{slug}/quote/{id}', [QuoteController::class, 'update'])->name('quote-update.api');
 	Route::post('/quotes/create', [QuoteController::class, 'store'])->name('quote-create.api');
 	Route::delete('/movies/{slug}/quote/{id}', [QuoteController::class, 'destroy'])->name('quote-remove.api');
+
+    Route::post('notify-user', [NotificationController::class, 'index'])->name('notify-user.api');
 });
