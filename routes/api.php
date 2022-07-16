@@ -69,4 +69,5 @@ Route::middleware(['auth:api'])->group(function () {
 
 	Route::post('/notify-user', [NotificationController::class, 'index']);
 	Route::get('/notifications', [NotificationController::class, 'getUserNotifications']);
+	Route::post('/notifications/read-all', [NotificationController::class, 'updateNotifications']);
 });
