@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('notify-user.{quote_author_id}', function ($quote_author_id) {
+	return auth()->user()->id === $quote_author_id;
 });

@@ -4,40 +4,41 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class NotifyUser implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+	use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $data;
+	public array $data;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct($data)
-    {
-        $this->data = $data;
-    }
+	public string $quote_author_id;
 
-    public function broadcastWith()
-    {
-        return $this->data;
-    }
+	/**
+	 * Create a new event instance.
+	 *
+	 * @return void
+	 */
+	public function __construct($data, $quote_author_id)
+	{
+		$this->data = $data;
+		$this->quote_author_id = $quote_author_id;
+	}
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new channel('notify-user');
-    }
+	public function broadcastWith(): array
+	{
+		return $this->data;
+	}
+
+	/**
+	 * Get the channels the event should broadcast on.
+	 *
+	 * @return Channel
+	 */
+	public function broadcastOn(): Channel
+	{
+		return new Channel('notify-user.' . $this->quote_author_id);
+	}
 }

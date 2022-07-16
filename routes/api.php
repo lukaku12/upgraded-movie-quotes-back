@@ -24,8 +24,8 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::post('/register/create', [RegisterController::class, 'store'])->name('register.api');
-Route::post('/login', [AuthController::class, 'login'])->name('login.api');
+Route::post('/register/create', [RegisterController::class, 'store']);
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => ['web']], function () {
 	Route::get('/auth/redirect', function () {
@@ -50,22 +50,23 @@ Route::group(['middleware' => ['web']], function () {
 });
 
 Route::middleware(['auth:api'])->group(function () {
-	Route::post('/logout', [AuthController::class, 'logout'])->name('logout.api');
+	Route::post('/logout', [AuthController::class, 'logout']);
 
-	Route::get('/user', [UserController::class, 'index'])->name('user.api');
+	Route::get('/user', [UserController::class, 'index']);
 
-	Route::get('/movies', [MovieController::class, 'index'])->name('movies.api');
-	Route::get('/movies/{slug}', [MovieController::class, 'show'])->name('movies.api');
+	Route::get('/movies', [MovieController::class, 'index']);
+	Route::get('/movies/{slug}', [MovieController::class, 'show']);
 
-	Route::get('/quotes', [QuoteController::class, 'index'])->name('quotes.api');
-	Route::post('/comment/add', [CommentController::class, 'index'])->name('add-comment.api');
-	Route::post('/like/add', [LikeController::class, 'index'])->name('add-like.api');
-	Route::post('/like/remove', [LikeController::class, 'destroy'])->name('remove-like.api');
-	Route::post('/movies/{slug}/quote/add', [QuoteController::class, 'addQuote'])->name('add-quote.api');
-	Route::get('/movies/{slug}/quote/{id}', [QuoteController::class, 'show'])->name('quote.api');
-	Route::post('/movies/{slug}/quote/{id}', [QuoteController::class, 'update'])->name('quote-update.api');
-	Route::post('/quotes/create', [QuoteController::class, 'store'])->name('quote-create.api');
-	Route::delete('/movies/{slug}/quote/{id}', [QuoteController::class, 'destroy'])->name('quote-remove.api');
+	Route::get('/quotes', [QuoteController::class, 'index']);
+	Route::post('/comment/add', [CommentController::class, 'index']);
+	Route::post('/like/add', [LikeController::class, 'index']);
+	Route::post('/like/remove', [LikeController::class, 'destroy']);
+	Route::post('/movies/{slug}/quote/add', [QuoteController::class, 'addQuote']);
+	Route::get('/movies/{slug}/quote/{id}', [QuoteController::class, 'show']);
+	Route::post('/movies/{slug}/quote/{id}', [QuoteController::class, 'update']);
+	Route::post('/quotes/create', [QuoteController::class, 'store']);
+	Route::delete('/movies/{slug}/quote/{id}', [QuoteController::class, 'destroy']);
 
-    Route::post('notify-user', [NotificationController::class, 'index'])->name('notify-user.api');
+	Route::post('/notify-user', [NotificationController::class, 'index']);
+	Route::get('/notifications', [NotificationController::class, 'getUserNotifications']);
 });
