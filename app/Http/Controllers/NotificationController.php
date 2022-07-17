@@ -12,6 +12,12 @@ class NotificationController extends Controller
 	{
 		$request = request()->all();
 
+		$quote_user_id = Quote::where('id', $request['quote_id'])->with('user')->pluck('user_id')->first();
+
+		if ($request['user_id'] == $quote_user_id)
+		{
+			return response()->json(['error' => true, 'error-msg' => 'You cannot like your own quote'], 400);
+		}
 //		if ($request['message'] === 'Reacted to your quote')
 //		{
 //			if (Notification::where('user_id', $request['user_id'])->where('quote_id', $request['quote_id'])->exists())
