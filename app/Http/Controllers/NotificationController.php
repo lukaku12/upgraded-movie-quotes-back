@@ -36,7 +36,9 @@ class NotificationController extends Controller
 
 		unset($message['user'], $message['quote']);
 
-		broadcast((new NotifyUser([$message], $message['quote_author_id'])));
+		broadcast(
+			(new NotifyUser([$message], $message['quote_author_id']))->dontBroadcastToCurrentUser()
+		);
 		return response()->json([
 			'message' => 'Notification Sent successfully',
 		], 200);

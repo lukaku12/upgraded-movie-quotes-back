@@ -25,7 +25,14 @@ class QuoteController extends Controller
 
 	public function show($slug, $id)
 	{
-		$quote = Quote::where('id', $id)->first();
+		$quote = Quote::where('id', $id)->with(['comments', 'likes'])->first();
+
+		foreach ($quote->comments as $comment)
+		{
+			$commentAuthor = User::where('id', $comment->user_id)->get('username');
+			$comment['username'] = $commentAuthor[0]->username;
+		}
+
 		return response()->json($quote);
 	}
 

@@ -18,6 +18,13 @@ class MovieController extends Controller
 		if (Movie::where('slug', $slug)->exists())
 		{
 			$movie = Movie::where('slug', $slug)->with('quotes')->get()->first();
+			// get likes for each quote
+			foreach ($movie->quotes as $quote)
+			{
+				$quote->likes = $quote->likes()->get();
+				$quote->comments = $quote->comments()->get();
+			}
+
 			return response()->json($movie);
 		}
 		return response(['error' => true, 'error-msg' => 'Not found'], 404);
