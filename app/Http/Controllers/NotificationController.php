@@ -14,20 +14,17 @@ class NotificationController extends Controller
 
 		$quote_user_id = Quote::where('id', $request['quote_id'])->with('user')->pluck('user_id')->first();
 
+		// don't save notification if user is the same as the quote user
 		if ($request['user_id'] == $quote_user_id)
 		{
-			return response()->json(['error' => true, 'error-msg' => 'You cannot like your own quote'], 400);
+			return response()->json('You cannot like your own quote');
 		}
-//		if ($request['message'] === 'Reacted to your quote')
-//		{
-//			if (Notification::where('user_id', $request['user_id'])->where('quote_id', $request['quote_id'])->exists())
-//			{
-//				return response()->json([
-//					'message' => 'Notification already exists',
-//					'status'  => 'error',
-//				], 400);
-//			}
-//		}
+		// check if notification already exists
+		$notification = Notification::where('user_id', $request['user_id'])->where('quote_id', $request['quote_id'])->first();
+		if ($notification)
+		{
+			return response()->json('You have already liked this quote');
+		}
 
 		$data = [
 			'user_id'  => $request['user_id'],
