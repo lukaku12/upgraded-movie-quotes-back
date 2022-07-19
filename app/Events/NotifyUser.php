@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -35,10 +35,10 @@ class NotifyUser implements ShouldBroadcast
 	/**
 	 * Get the channels the event should broadcast on.
 	 *
-	 * @return Channel
+	 * @return PrivateChannel
 	 */
-	public function broadcastOn(): Channel
+	public function broadcastOn(): PrivateChannel
 	{
-		return new Channel('notify-user.' . $this->quote_author_id);
+		return new PrivateChannel('notify-user.' . $this->quote_author_id);
 	}
 }
