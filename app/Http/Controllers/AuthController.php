@@ -68,7 +68,7 @@ class AuthController extends Controller
 	/**
 	 * Get the token array structure.
 	 */
-	protected function respondWithToken(string $token): JsonResponse
+	public function respondWithToken(string $token): JsonResponse
 	{
 		return response()->json([
 			'access_token' => $token,

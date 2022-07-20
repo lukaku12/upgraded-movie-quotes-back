@@ -5,13 +5,11 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,25 +26,8 @@ Route::post('/register/create', [RegisterController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => ['web']], function () {
-	Route::get('/auth/redirect', function () {
-		return Socialite::driver('google')->redirect();
-	});
-	Route::get('/google-callback', function () {
-		$googleUser = Socialite::driver('google')->user();
-
-		$user = User::updateOrCreate([
-			'google_id' => $googleUser->id,
-		], [
-			'username'                 => $googleUser->name,
-			'email'                    => $googleUser->email,
-			'google_token'             => $googleUser->token,
-			'google_refresh_token'     => $googleUser->refreshToken,
-		]);
-
-		Auth::login($user);
-
-		return redirect('/dashboard');
-	});
+	Route::get('/auth/redirect', [OAuthController::class, 'redirect']);
+	Route::get('/google-callback', [OAuthController::class, 'callback']);
 });
 
 Route::middleware(['auth:api'])->group(function () {
