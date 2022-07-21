@@ -24,6 +24,33 @@ class QuoteController extends Controller
 		return response()->json($quotes, 200);
 	}
 
+	public function store()
+	{
+		$request = request()->validate([
+			'title_en'     => 'required|min:3|max:200|unique:movies,title',
+			'title_ka'     => 'required|min:3|max:200|unique:movies,title',
+			'thumbnail'    => 'required|image|',
+			'movie_id'     => 'required',
+		]);
+		$data = [
+			'title'  => [
+				'en' => $request['title_en'],
+				'ka' => $request['title_ka'],
+			],
+			'user_id'     => auth()->id(),
+			'movie_id'    => $request['movie_id'],
+		];
+
+		// upload thumbnail
+		$thumbnailPath = request()->file('thumbnail')->store('thumbnails');
+		$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
+		$data['thumbnail'] = $correctThumbnailPath;
+
+		Quote::create($data);
+
+		return response()->json('Quote Added successfuly!', 200);
+	}
+
 	public function show($slug, $id)
 	{
 		$quote = Quote::where('id', $id)->with(['comments', 'likes'])->first();
