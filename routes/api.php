@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\NotificationController;
@@ -37,6 +38,8 @@ Route::middleware(['auth:api'])->group(function () {
 
 	Route::get('/movies', [MovieController::class, 'index']);
 	Route::get('/movies/{slug}', [MovieController::class, 'show']);
+	Route::post('/movies/add', [MovieController::class, 'store']);
+	Route::get('/genres', [GenreController::class, 'index']);
 
 	Route::get('/quotes', [QuoteController::class, 'index']);
 	Route::post('/comment/add', [CommentController::class, 'index']);

@@ -23,7 +23,7 @@ class MovieFactory extends Factory
 		return [
 			'title'     => ['en' => $this->faker->sentence(), 'ka' => $fakerKa->realText(30)],
 			'slug'      => $slug,
-			'thumbnail' => 'Rectangle5.png',
+			'thumbnail' => '3.jpg',
 			'user_id'   => User::factory(),
 		];
 	}
