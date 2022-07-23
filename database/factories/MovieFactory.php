@@ -21,10 +21,12 @@ class MovieFactory extends Factory
 		$title = $this->faker->sentence();
 		$slug = strtolower(str_replace('.', '', str_replace(' ', '-', $title)));
 		return [
-			'title'     => ['en' => $this->faker->sentence(), 'ka' => $fakerKa->realText(30)],
-			'slug'      => $slug,
-			'thumbnail' => '3.jpg',
-			'user_id'   => User::factory(),
+			'title'       => ['en' => $this->faker->sentence(), 'ka' => $fakerKa->realText(30)],
+			'director'    => ['en' => $this->faker->name, 'ka' => $fakerKa->name],
+			'description' => ['en' => $this->faker->text, 'ka' => $fakerKa->text],
+			'slug'        => $slug,
+			'thumbnail'   => '3.jpg',
+			'user_id'     => User::factory(),
 		];
 	}
 }

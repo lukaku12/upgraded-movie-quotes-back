@@ -18,12 +18,12 @@ class Quote extends Model
 
 	public function movie(): BelongsTo
 	{
-		return $this->belongsTo(Movie::class, 'movie_id');
+		return $this->belongsTo(Movie::class);
 	}
 
 	public function user(): BelongsTo
 	{
-		return $this->belongsTo(User::class, 'user_id');
+		return $this->belongsTo(User::class);
 	}
 
 	public function comments(): HasMany

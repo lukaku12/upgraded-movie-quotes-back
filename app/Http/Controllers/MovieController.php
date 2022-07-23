@@ -19,7 +19,7 @@ class MovieController extends Controller
 	{
 		if (Movie::where('slug', $slug)->exists())
 		{
-			$movie = Movie::where('slug', $slug)->with('quotes')->get()->first();
+			$movie = Movie::where('slug', $slug)->with(['quotes', 'genres'])->get()->first();
 			// get likes for each quote
 			foreach ($movie->quotes as $quote)
 			{
