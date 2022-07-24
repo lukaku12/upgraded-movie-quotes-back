@@ -28,7 +28,7 @@ class UserController extends Controller
 
 		$user = User::where('id', auth()->id())->first();
 
-		$user->update(['username' => $data['username'], 'picture' => 'nigga']);
+		$user->update($data);
 
 		return response()->json('User updated successfully', 200);
 	}

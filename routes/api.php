@@ -7,6 +7,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OAuthController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
@@ -23,12 +24,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register/create', [RegisterController::class, 'store']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::middleware(['guest'])->group(function () {
+	Route::post('/register/create', [RegisterController::class, 'store']);
+	Route::post('/login', [AuthController::class, 'login']);
 
-Route::group(['middleware' => ['web']], function () {
-	Route::get('/auth/redirect', [OAuthController::class, 'redirect']);
-	Route::get('/google-callback', [OAuthController::class, 'callback']);
+	Route::post('/forget-password', [PasswordResetController::class, 'submitForgetPasswordForm']);
+	Route::post('/reset-password', [PasswordResetController::class, 'submitResetPasswordForm']);
+
+	Route::group(['middleware' => ['web']], function () {
+		Route::get('/auth/redirect', [OAuthController::class, 'redirect']);
+		Route::get('/google-callback', [OAuthController::class, 'callback']);
+	});
 });
 
 Route::middleware(['auth:api'])->group(function () {
