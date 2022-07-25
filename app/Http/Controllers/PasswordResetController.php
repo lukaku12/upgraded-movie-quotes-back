@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PasswordResetRequest;
 use App\Http\Requests\SubmitPasswordResetRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -12,7 +13,7 @@ use Illuminate\Support\Str;
 
 class PasswordResetController extends Controller
 {
-	public function submitForgetPasswordForm(PasswordResetRequest $request)
+	public function submitForgetPasswordForm(PasswordResetRequest $request): JsonResponse
 	{
 		$token = Str::random(64);
 
@@ -30,7 +31,7 @@ class PasswordResetController extends Controller
 		return response()->json('Email sent successfully', 200);
 	}
 
-	public function submitResetPasswordForm(SubmitPasswordResetRequest $request)
+	public function submitResetPasswordForm(SubmitPasswordResetRequest $request): JsonResponse
 	{
 		$updatePassword = DB::table('password_resets')
 			->where([

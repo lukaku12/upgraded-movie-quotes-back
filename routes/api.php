@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
@@ -35,6 +36,12 @@ Route::middleware(['guest'])->group(function () {
 		Route::get('/auth/redirect', [OAuthController::class, 'redirect']);
 		Route::get('/google-callback', [OAuthController::class, 'callback']);
 	});
+});
+
+Route::middleware(['auth'])->group(function () {
+	Route::get('/verify-email', [EmailVerificationController::class, 'show'])->name('verification.notice');
+	Route::post('/verify-email/request', [EmailVerificationController::class, 'request'])->name('verification.request');
+	Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('signed')->name('verification.verify');
 });
 
 Route::middleware(['auth:api'])->group(function () {

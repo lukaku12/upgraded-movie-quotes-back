@@ -24,6 +24,11 @@ class AuthController extends Controller
 		return response()->json('User successfuly registered!', 200);
 	}
 
+	public function redirect()
+	{
+		return redirect(env('FRONT_BASE_URL') . '/login');
+	}
+
 	/**
 	 * Get a JWT via given credentials.
 	 */
