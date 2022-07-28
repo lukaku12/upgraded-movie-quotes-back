@@ -29,7 +29,7 @@ class QuoteController extends Controller
 		$request = request()->validate([
 			'title_en'     => 'required|min:3|max:200|unique:movies,title',
 			'title_ka'     => 'required|min:3|max:200|unique:movies,title',
-			'thumbnail'    => 'required|image|',
+			'thumbnail'    => 'required|image',
 			'movie_id'     => 'required',
 		]);
 		$data = [
@@ -65,7 +65,7 @@ class QuoteController extends Controller
 		return response()->json($quote);
 	}
 
-	public function addQuote($slug, AddQuoteRequest $request)
+	public function addQuoteForMovie($slug, AddQuoteRequest $request)
 	{
 		$data = [
 			'title'  => [
@@ -75,6 +75,10 @@ class QuoteController extends Controller
 			'movie_id'    => $request->movie_id,
 			'user_id'     => auth()->user()->id,
 		];
+
+		$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
+		$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
+		$data['thumbnail'] = $correctThumbnailPath;
 
 		Quote::create($data);
 
