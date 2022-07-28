@@ -85,6 +85,13 @@ class MovieController extends Controller
 	{
 		$movie = Movie::where('slug', $slug)->first();
 
+		$genres = MovieGenre::where('movie_id', $movie->id)->get();
+
+		foreach ($genres as $genre)
+		{
+			$genre->delete();
+		}
+
 		$data = [
 			'user_id'   => auth()->id(),
 			'slug'      => strtolower(str_replace('.', '', str_replace(' ', '-', $request->title_en))),
