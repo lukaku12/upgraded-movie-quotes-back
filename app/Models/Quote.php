@@ -16,6 +16,18 @@ class Quote extends Model
 
 	public $translatable = ['title'];
 
+	public function scopeFilter($query, array $filters)
+	{
+		$query->when(
+			$filters['value'] ?? false,
+			fn ($query, $search) => $query
+				->where(
+					fn ($query) => $query
+						->where('title', 'like', '%' . $search . '%')
+				)
+		);
+	}
+
 	public function movie(): BelongsTo
 	{
 		return $this->belongsTo(Movie::class, 'movie_id');

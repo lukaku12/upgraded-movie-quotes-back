@@ -11,6 +11,7 @@ use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -58,6 +59,7 @@ Route::middleware(['auth:api'])->group(function () {
 	Route::post('/movies/add', [MovieController::class, 'store']);
 	Route::get('/genres', [GenreController::class, 'index']);
 
+	Route::post('/search', [SearchController::class, 'search']);
 	Route::get('/quotes', [QuoteController::class, 'index']);
 	Route::post('/comment/add', [CommentController::class, 'index']);
 	Route::post('/like/add', [LikeController::class, 'index']);

@@ -16,6 +16,18 @@ class Movie extends Model
 
 	public $translatable = ['title', 'director', 'description'];
 
+	public function scopeFilter($query, array $filters)
+	{
+		$query->when(
+			$filters['value'] ?? false,
+			fn ($query, $search) => $query
+				->where(
+					fn ($query) => $query
+						->where('title', 'like', '%' . $search . '%')
+				)
+		);
+	}
+
 	public function quotes(): HasMany
 	{
 		return $this->hasMany(Quote::class);
