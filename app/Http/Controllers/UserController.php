@@ -25,6 +25,10 @@ class UserController extends Controller
 			$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
 			$data['picture'] = $correctThumbnailPath;
 		}
+		if ($request->password !== null && $request->confirm_password !== null)
+		{
+			$data['password'] = bcrypt($request['password']);
+		}
 
 		$user = User::where('id', auth()->id())->first();
 

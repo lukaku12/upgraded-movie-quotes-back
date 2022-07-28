@@ -53,6 +53,7 @@ Route::middleware(['auth:api'])->group(function () {
 	Route::get('/movies', [MovieController::class, 'index']);
 	Route::get('/movies/{slug}', [MovieController::class, 'show']);
 	Route::get('/movies/{slug}/edit', [MovieController::class, 'editMovie']);
+	Route::post('/movies/{slug}/edit', [MovieController::class, 'updateMovie']);
 	Route::post('/movies/add', [MovieController::class, 'store']);
 	Route::get('/genres', [GenreController::class, 'index']);
 

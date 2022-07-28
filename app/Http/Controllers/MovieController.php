@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddMovieRequest;
+use App\Http\Requests\UpdateMovieRequest;
 use App\Models\Movie;
 use App\Models\MovieGenre;
 
@@ -76,6 +77,41 @@ class MovieController extends Controller
 		if ($movie)
 		{
 			return response()->json($movie);
+		}
+		return response(['error' => true, 'error-msg' => 'Not found'], 404);
+	}
+
+	public function updateMovie(UpdateMovieRequest $request, $slug)
+	{
+		$movie = Movie::where('slug', $slug)->first();
+
+		$data = [
+			'user_id'   => auth()->id(),
+			'slug'      => strtolower(str_replace('.', '', str_replace(' ', '-', $request->title_en))),
+			'title'     => [
+				'en' => $request->title_en,
+				'ka' => $request->title_ka,
+			],
+			'director' => [
+				'en' => $request->director_en,
+				'ka' => $request->director_ka,
+			],
+			'description' => [
+				'en' => $request->description_en,
+				'ka' => $request->description_ka,
+			],
+		];
+		if ($request->thumbnail)
+		{
+			$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
+			$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
+			$data['thumbnail'] = $correctThumbnailPath;
+		}
+
+		if ($movie)
+		{
+			$movie->update($data);
+			return response()->json($data);
 		}
 		return response(['error' => true, 'error-msg' => 'Not found'], 404);
 	}
