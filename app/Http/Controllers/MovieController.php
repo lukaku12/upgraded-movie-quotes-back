@@ -69,4 +69,14 @@ class MovieController extends Controller
 
 		return response()->json($movie);
 	}
+
+	public function editMovie($slug)
+	{
+		$movie = Movie::where('slug', $slug)->first();
+		if ($movie)
+		{
+			return response()->json($movie);
+		}
+		return response(['error' => true, 'error-msg' => 'Not found'], 404);
+	}
 }
