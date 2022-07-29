@@ -10,7 +10,6 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\QuoteController;
-use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -27,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['guest'])->group(function () {
-	Route::post('/register/create', [RegisterController::class, 'store']);
+	Route::post('/register/create', [AuthController::class, 'register']);
 	Route::post('/login', [AuthController::class, 'login']);
 
 	Route::post('/forget-password', [PasswordResetController::class, 'submitForgetPasswordForm']);
@@ -38,12 +37,7 @@ Route::middleware(['guest'])->group(function () {
 		Route::get('/google-callback', [OAuthController::class, 'callback']);
 	});
 });
-
-Route::middleware(['auth'])->group(function () {
-	Route::get('/verify-email', [EmailVerificationController::class, 'show'])->name('verification.notice');
-	Route::post('/verify-email/request', [EmailVerificationController::class, 'request'])->name('verification.request');
 	Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('signed')->name('verification.verify');
-});
 
 Route::middleware(['auth:api'])->group(function () {
 	Route::post('/logout', [AuthController::class, 'logout']);

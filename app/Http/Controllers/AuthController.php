@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\AuthRequest;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -15,11 +17,22 @@ class AuthController extends Controller
 	 */
 	public function register(RegisterRequest $request): JsonResponse
 	{
-		User::create([
-			'name'     => $request->name,
-			'email'    => $request->email,
-			'password' => Hash::make($request->password),
+		if ($request->password !== $request->confirm_password)
+		{
+			throw ValidationException::withMessages([
+				'password'        => 'Passwords do not match!',
+			]);
+		}
+
+		$user = User::create([
+			'username'     => $request->username,
+			'email'        => $request->email,
+			'password'     => Hash::make($request->password),
 		]);
+
+		auth()->attempt($request->all());
+
+		event(new Registered($user));
 
 		return response()->json('User successfuly registered!', 200);
 	}

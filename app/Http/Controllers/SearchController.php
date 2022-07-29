@@ -17,8 +17,13 @@ class SearchController extends Controller
 			{
 				$quote['likes'] = $quote->likes;
 				$quote['comments'] = $quote->comments;
+				foreach ($quote['comments'] as $comment)
+				{
+					$comment['username'] = $comment->user()->get()->pluck(['username'])[0];
+					$comment['picture'] = $comment->user()->get()->pluck(['picture'])[0];
+				}
 				$quote['movie'] = $quote->movie;
-				$quote['user'] = $quote->user()->get()->pluck(['username', 'picture']);
+				$quote['user'] = $quote->user()->get(['username', 'picture'])->first();
 			}
 			return $quotes_collection;
 		}
