@@ -6,22 +6,27 @@ use App\Http\Requests\AddQuoteRequest;
 use App\Http\Requests\UpdateQuoteRequest;
 use App\Models\Quote;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class QuoteController extends Controller
 {
 	public function index()
 	{
 		$quotes = Quote::with(['movie', 'user', 'comments', 'likes'])->orderBy('created_at', 'DESC')->paginate(5);
-		foreach ($quotes as $quote)
+		if ($quotes)
 		{
-			foreach ($quote->comments as $comment)
+			foreach ($quotes as $quote)
 			{
-				$commentAuthor = User::where('id', $comment->user_id)->get(['username', 'picture']);
-				$comment['username'] = $commentAuthor[0]->username;
-				$comment['picture'] = $commentAuthor[0]->picture;
+				foreach ($quote->comments as $comment)
+				{
+					$commentAuthor = User::where('id', $comment->user_id)->get(['username', 'picture']);
+					$comment['username'] = $commentAuthor[0]->username;
+					$comment['picture'] = $commentAuthor[0]->picture;
+				}
 			}
+			return response()->json($quotes, 200);
 		}
-		return response()->json($quotes, 200);
+		return response(['error' => true, 'error-msg' => 'Not found'], 404);
 	}
 
 	public function store()
@@ -55,14 +60,23 @@ class QuoteController extends Controller
 	{
 		$quote = Quote::where('id', $id)->with(['comments', 'likes'])->first();
 
-		foreach ($quote->comments as $comment)
+		if (!Gate::allows('view-quotes', $quote))
 		{
-			$commentAuthor = User::where('id', $comment->user_id)->get(['username', 'picture']);
-			$comment['username'] = $commentAuthor[0]->username;
-			$comment['picture'] = $commentAuthor[0]->picture;
+			abort(403);
 		}
 
-		return response()->json($quote);
+		if ($quote)
+		{
+			foreach ($quote->comments as $comment)
+			{
+				$commentAuthor = User::where('id', $comment->user_id)->get(['username', 'picture']);
+				$comment['username'] = $commentAuthor[0]->username;
+				$comment['picture'] = $commentAuthor[0]->picture;
+			}
+
+			return response()->json($quote);
+		}
+		return response(['error' => true, 'error-msg' => 'Not found'], 404);
 	}
 
 	public function addQuoteForMovie($slug, AddQuoteRequest $request)

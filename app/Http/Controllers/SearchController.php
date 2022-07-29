@@ -41,6 +41,11 @@ class SearchController extends Controller
 					{
 						$movie_quote['likes'] = $movie_quote->likes;
 						$movie_quote['comments'] = $movie_quote->comments;
+						foreach ($movie_quote['comments'] as $comment)
+						{
+							$comment['username'] = $comment->user()->get()->pluck(['username'])[0];
+							$comment['picture'] = $comment->user()->get()->pluck(['picture'])[0];
+						}
 						$movie_quote['movie'] = $movie_quote->movie;
 						$movie_quote['user'] = $movie_quote->user()->get()->pluck(['username', 'picture']);
 					}

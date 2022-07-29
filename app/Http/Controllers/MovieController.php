@@ -6,6 +6,7 @@ use App\Http\Requests\AddMovieRequest;
 use App\Http\Requests\UpdateMovieRequest;
 use App\Models\Movie;
 use App\Models\MovieGenre;
+use Illuminate\Support\Facades\Gate;
 
 class MovieController extends Controller
 {
@@ -21,6 +22,11 @@ class MovieController extends Controller
 		if (Movie::where('slug', $slug)->exists())
 		{
 			$movie = Movie::where('slug', $slug)->with(['quotes', 'genres'])->get()->first();
+
+			if (!Gate::allows('view-movie', $movie))
+			{
+				abort(403);
+			}
 			// get likes for each quote
 			foreach ($movie->quotes as $quote)
 			{

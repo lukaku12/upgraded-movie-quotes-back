@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Movie;
+use App\Models\Quote;
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -23,5 +27,13 @@ class AuthServiceProvider extends ServiceProvider
 	public function boot()
 	{
 		$this->registerPolicies();
+
+		Gate::define('view-quotes', function (User $user, Quote $quote) {
+			return $user->id === $quote->user_id;
+		});
+
+		Gate::define('view-movie', function (User $user, Movie $movie) {
+			return $user->id === $movie->user_id;
+		});
 	}
 }
