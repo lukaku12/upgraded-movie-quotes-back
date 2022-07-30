@@ -15,10 +15,11 @@ class UserController extends Controller
 
 	public function update(UpdateUserRequest $request)
 	{
-		$data = [
-			'username' => $request['username'],
-		];
-		// TODO - update user
+		$data = [];
+		if ($request->username)
+		{
+			$data['username'] = $request->username;
+		}
 		if ($request->picture !== null)
 		{
 			$thumbnailPath = $request->file('picture')->store('thumbnails');

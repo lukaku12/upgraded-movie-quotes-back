@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 
 class OAuthController extends Controller
@@ -15,19 +15,28 @@ class OAuthController extends Controller
 
 	public function callback()
 	{
-		$googleUser = Socialite::driver('google')->user();
+		$googleUser = Socialite::driver('google')->stateless()->user();
 
-		$user = User::updateOrCreate([
-			'google_id' => $googleUser->id,
-		], [
-			'username'                 => $googleUser->name,
-			'email'                    => $googleUser->email,
-			'google_token'             => $googleUser->token,
-			'google_refresh_token'     => $googleUser->refreshToken,
-		]);
+		$googlePassword = Hash::make($googleUser->id);
 
-		Auth::login($user);
+		$user = User::where('email', $googleUser->email)->first();
 
-		return redirect('http://localhost:3000/');
+		if (!$user || ($user->google_id))
+		{
+			User::updateOrCreate([
+				'google_id' => $googleUser->id,
+			], [
+				'username'                 => $googleUser->name,
+				'email'                    => $googleUser->email,
+				'google_token'             => $googleUser->token,
+				'google_refresh_token'     => $googleUser->refreshToken,
+				'password'                 => $googlePassword,
+			]);
+
+			$token = auth()->attempt(['email' => $googleUser->email, 'password' => $googleUser->id]);
+
+			return redirect(env('FRONT_BASE_URL') . '/oauth?token=' . $token . '&type=bearer&expires_in=' . auth()->factory()->getTTL() * 60);
+		}
+		return redirect(env('FRONT_BASE_URL') . '/forbidden');
 	}
 }
