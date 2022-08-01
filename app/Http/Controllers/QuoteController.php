@@ -6,11 +6,13 @@ use App\Http\Requests\AddQuoteRequest;
 use App\Http\Requests\UpdateQuoteRequest;
 use App\Models\Quote;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
 class QuoteController extends Controller
 {
-	public function index()
+	public function index(): Response|JsonResponse
 	{
 		$quotes = Quote::with(['movie', 'user', 'comments', 'likes'])->orderBy('created_at', 'DESC')->paginate(5);
 		if ($quotes)
@@ -29,7 +31,7 @@ class QuoteController extends Controller
 		return response(['error' => true, 'error-msg' => 'Not found'], 404);
 	}
 
-	public function store()
+	public function store(): JsonResponse
 	{
 		$request = request()->validate([
 			'title_en'     => 'required|min:3|max:200|unique:movies,title',
@@ -56,7 +58,7 @@ class QuoteController extends Controller
 		return response()->json('Quote Added successfuly!', 200);
 	}
 
-	public function show($slug, $id)
+	public function show($slug, $id): Response|JsonResponse
 	{
 		$quote = Quote::where('id', $id)->with(['comments', 'likes'])->first();
 
@@ -79,7 +81,7 @@ class QuoteController extends Controller
 		return response(['error' => true, 'error-msg' => 'Not found'], 404);
 	}
 
-	public function addQuoteForMovie($slug, AddQuoteRequest $request)
+	public function addQuoteForMovie(AddQuoteRequest $request): JsonResponse
 	{
 		$data = [
 			'title'  => [
@@ -99,7 +101,7 @@ class QuoteController extends Controller
 		return response()->json('Quote Added successfuly!', 200);
 	}
 
-	public function update($quote, $id, UpdateQuoteRequest $request)
+	public function update($quote, $id, UpdateQuoteRequest $request): JsonResponse
 	{
 		$selected_quote = Quote::where('id', $id)->first();
 		$data = [
@@ -121,7 +123,7 @@ class QuoteController extends Controller
 		return response()->json('Quote updated successfuly!', 200);
 	}
 
-	public function destroy($slug, $id)
+	public function destroy($slug, $id): JsonResponse
 	{
 		$quote = Quote::where('id', $id)->first();
 		$quote->delete();

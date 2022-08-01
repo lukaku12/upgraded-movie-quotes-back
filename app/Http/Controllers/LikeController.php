@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Events\AddLike;
 use App\Events\RemoveLike;
 use App\Models\Like;
+use Illuminate\Http\JsonResponse;
 
 class LikeController extends Controller
 {
-	public function index()
+	public function index(): JsonResponse
 	{
 		$request = request()->validate([
 			'quote_id' => 'required',
@@ -27,7 +28,7 @@ class LikeController extends Controller
 		return response()->json('Quote liked successfuly!', 200);
 	}
 
-	public function destroy()
+	public function destroy(): JsonResponse
 	{
 		$request = request()->validate([
 			'quote_id' => 'required',

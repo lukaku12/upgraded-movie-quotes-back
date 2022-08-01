@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
@@ -13,7 +14,7 @@ class UserController extends Controller
 		return auth()->user();
 	}
 
-	public function update(UpdateUserRequest $request)
+	public function update(UpdateUserRequest $request): JsonResponse
 	{
 		$data = [];
 		if ($request->username)

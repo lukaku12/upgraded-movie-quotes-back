@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Events\NotifyUser;
 use App\Models\Notification;
 use App\Models\Quote;
+use Illuminate\Http\JsonResponse;
 
 class NotificationController extends Controller
 {
-	public function index()
+	public function index(): JsonResponse
 	{
 		$request = request()->all();
 
@@ -64,7 +65,7 @@ class NotificationController extends Controller
 		return $notifications;
 	}
 
-	public function getUserNotifications()
+	public function getUserNotifications(): JsonResponse
 	{
 		$notifications = $this->getNotifications();
 
@@ -74,7 +75,7 @@ class NotificationController extends Controller
 	/**
 	 * @return mixed
 	 */
-	public function getNotifications()
+	public function getNotifications(): mixed
 	{
 		$user_notifications = Quote::where('user_id', auth()->user()->id)->with(['notifications'])->get();
 		$user_notifications = $user_notifications->map(function ($item) {

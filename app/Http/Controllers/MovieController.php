@@ -6,18 +6,20 @@ use App\Http\Requests\AddMovieRequest;
 use App\Http\Requests\UpdateMovieRequest;
 use App\Models\Movie;
 use App\Models\MovieGenre;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
 class MovieController extends Controller
 {
-	public function index()
+	public function index(): JsonResponse
 	{
 		$movies = Movie::where('user_id', auth()->id())->with('quotes')->get();
 
 		return response()->json($movies);
 	}
 
-	public function show($slug)
+	public function show($slug): JsonResponse|Response
 	{
 		if (Movie::where('slug', $slug)->exists())
 		{
@@ -39,7 +41,7 @@ class MovieController extends Controller
 		return response(['error' => true, 'error-msg' => 'Not found'], 404);
 	}
 
-	public function store(AddMovieRequest $request)
+	public function store(AddMovieRequest $request): JsonResponse
 	{
 		$data = [
 			'user_id'   => auth()->id(),
@@ -77,7 +79,7 @@ class MovieController extends Controller
 		return response()->json($movie);
 	}
 
-	public function editMovie($slug)
+	public function editMovie($slug): Response|JsonResponse
 	{
 		$movie = Movie::where('slug', $slug)->first();
 		if ($movie)
@@ -87,7 +89,7 @@ class MovieController extends Controller
 		return response(['error' => true, 'error-msg' => 'Not found'], 404);
 	}
 
-	public function updateMovie(UpdateMovieRequest $request, $slug)
+	public function updateMovie(UpdateMovieRequest $request, $slug): Response|JsonResponse
 	{
 		$movie = Movie::where('slug', $slug)->first();
 
@@ -139,7 +141,7 @@ class MovieController extends Controller
 		return response(['error' => true, 'error-msg' => 'Not found'], 404);
 	}
 
-	public function destroy($slug)
+	public function destroy($slug): Response|JsonResponse
 	{
 		$movie = Movie::where('slug', $slug)->first();
 

@@ -6,6 +6,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\AuthRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -25,10 +26,10 @@ class AuthController extends Controller
 
 		$user->sendEmailVerificationNotification();
 
-		return response()->json('User successfuly registered!', 200);
+		return response()->json('User successfully registered!', 200);
 	}
 
-	public function redirect()
+	public function redirect(): RedirectResponse
 	{
 		return redirect(env('FRONT_BASE_URL') . '/login');
 	}

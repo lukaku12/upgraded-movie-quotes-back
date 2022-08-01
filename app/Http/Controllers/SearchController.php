@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Quote;
 
 class SearchController extends Controller
 {
-	public function search(Request $request)
+	public function search(Request $request): JsonResponse
 	{
 		if ($request->type === 'quote')
 		{

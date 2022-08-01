@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Events\AddComment;
 use App\Http\Requests\AddCommentRequest;
 use App\Models\Comment;
+use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
 {
-	public function index(AddCommentRequest $request)
+	public function index(AddCommentRequest $request): JsonResponse
 	{
 		$data = [
 			'quote_id'    => $request->quote_id,
@@ -27,6 +28,6 @@ class CommentController extends Controller
 			(new AddComment([$savedData]))->dontBroadcastToCurrentUser()
 		);
 
-		return response()->json('Comment Added successfuly!', 200);
+		return response()->json('Comment Added successfully!', 200);
 	}
 }
