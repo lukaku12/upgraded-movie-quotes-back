@@ -62,13 +62,13 @@ class QuoteController extends Controller
 	{
 		$quote = Quote::where('id', $id)->with(['comments', 'likes'])->first();
 
-		if (!Gate::allows('view-quotes', $quote))
-		{
-			abort(403);
-		}
-
 		if ($quote)
 		{
+			if (!Gate::allows('view-quotes', $quote))
+			{
+				abort(403);
+			}
+
 			foreach ($quote->comments as $comment)
 			{
 				$commentAuthor = User::where('id', $comment->user_id)->get(['username', 'picture']);
