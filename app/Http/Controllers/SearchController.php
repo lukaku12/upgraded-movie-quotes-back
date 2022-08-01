@@ -16,17 +16,10 @@ class SearchController extends Controller
 			$quotes_collection = Quote::filter(request(['value']))->get();
 			foreach ($quotes_collection as $quote)
 			{
-				$quote['likes'] = $quote->likes;
-				$quote['comments'] = $quote->comments;
-				foreach ($quote['comments'] as $comment)
-				{
-					$comment['username'] = $comment->user()->get()->pluck(['username'])[0];
-					$comment['picture'] = $comment->user()->get()->pluck(['picture'])[0];
-				}
-				$quote['movie'] = $quote->movie;
+				$quote = $this->getMovie_quote($quote);
 				$quote['user'] = $quote->user()->get(['username', 'picture'])->first();
 			}
-			return $quotes_collection;
+			return response()->json($quotes_collection);
 		}
 		if ($request->type === 'movie')
 		{
@@ -40,14 +33,7 @@ class SearchController extends Controller
 					$movie_quotes[] = $movie_quotes_collection[0];
 					foreach ($movie_quotes as $movie_quote)
 					{
-						$movie_quote['likes'] = $movie_quote->likes;
-						$movie_quote['comments'] = $movie_quote->comments;
-						foreach ($movie_quote['comments'] as $comment)
-						{
-							$comment['username'] = $comment->user()->get()->pluck(['username'])[0];
-							$comment['picture'] = $comment->user()->get()->pluck(['picture'])[0];
-						}
-						$movie_quote['movie'] = $movie_quote->movie;
+						$movie_quote = $this->getMovie_quote($movie_quote);
 						$movie_quote['user'] = $movie_quote->user()->get()->pluck(['username', 'picture']);
 					}
 				}
@@ -56,5 +42,23 @@ class SearchController extends Controller
 			return response()->json($movie_quotes);
 		}
 		return response()->json('Invalid search type', 400);
+	}
+
+	/**
+	 * @param mixed $movie_quote
+	 *
+	 * @return mixed
+	 */
+	public function getMovie_quote(mixed $movie_quote): mixed
+	{
+		$movie_quote['likes'] = $movie_quote->likes;
+		$movie_quote['comments'] = $movie_quote->comments;
+		foreach ($movie_quote['comments'] as $comment)
+		{
+			$comment['username'] = $comment->user()->get()->pluck(['username'])[0];
+			$comment['picture'] = $comment->user()->get()->pluck(['picture'])[0];
+		}
+		$movie_quote['movie'] = $movie_quote->movie;
+		return $movie_quote;
 	}
 }
