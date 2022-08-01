@@ -6,7 +6,6 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\AuthRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -29,11 +28,6 @@ class AuthController extends Controller
 		return response()->json('User successfully registered!', 200);
 	}
 
-	public function redirect(): RedirectResponse
-	{
-		return redirect(env('FRONT_BASE_URL') . '/login');
-	}
-
 	/**
 	 * Get a JWT via given credentials.
 	 */
@@ -54,14 +48,6 @@ class AuthController extends Controller
 	}
 
 	/**
-	 * Get the authenticated User.
-	 */
-	public function user(): JsonResponse
-	{
-		return response()->json(auth()->user(), 200);
-	}
-
-	/**
 	 * Log the user out (Invalidate the token).
 	 */
 	public function logout(): JsonResponse
@@ -69,14 +55,6 @@ class AuthController extends Controller
 		auth()->logout();
 
 		return response()->json(['message' => 'Successfully logged out']);
-	}
-
-	/**
-	 * Refresh a token.
-	 */
-	public function refresh(): JsonResponse
-	{
-		return $this->respondWithToken(auth()->refresh());
 	}
 
 	/**
