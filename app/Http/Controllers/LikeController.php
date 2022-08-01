@@ -4,16 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Events\AddLike;
 use App\Events\RemoveLike;
+use App\Http\Requests\LikeRequest;
 use App\Models\Like;
 use Illuminate\Http\JsonResponse;
 
 class LikeController extends Controller
 {
-	public function index(): JsonResponse
+	public function index(LikeRequest $request): JsonResponse
 	{
-		$request = request()->validate([
-			'quote_id' => 'required',
-		]);
 		broadcast((new AddLike(['quote_id' => $request['quote_id'], 'user_id' => auth()->id()]))->dontBroadcastToCurrentUser());
 		// check if user has already liked this quote
 		if (Like::where('user_id', auth()->id())->where('quote_id', $request['quote_id'])->exists())
@@ -25,20 +23,17 @@ class LikeController extends Controller
 			'quote_id' => $request['quote_id'],
 		]);
 
-		return response()->json('Quote liked successfuly!', 200);
+		return response()->json('Quote liked successfully!', 200);
 	}
 
-	public function destroy(): JsonResponse
+	public function destroy(LikeRequest $request): JsonResponse
 	{
-		$request = request()->validate([
-			'quote_id' => 'required',
-		]);
 		broadcast((new RemoveLike(['quote_id' => $request['quote_id'], 'user_id' => auth()->id()]))->dontBroadcastToCurrentUser());
 
 		$like = Like::where('quote_id', $request['quote_id'])->where('user_id', auth()->user()->id);
 
 		$like->delete();
 
-		return response()->json('Quote unliked successfuly!', 200);
+		return response()->json('Quote unliked successfully!', 200);
 	}
 }
