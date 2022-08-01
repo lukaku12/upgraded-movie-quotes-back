@@ -23,16 +23,4 @@ class EmailVerificationController extends Controller
 
 		return redirect(env('FRONT_BASE_URL') . '/email-is-verified');
 	}
-
-	public function resend()
-	{
-		if (auth()->user()->hasVerifiedEmail())
-		{
-			return response()->json(['msg' => 'Email already verified.'], 400);
-		}
-
-		auth()->user()->sendEmailVerificationNotification();
-
-		return response()->json(['msg' => 'Email verification link sent on your email id']);
-	}
 }

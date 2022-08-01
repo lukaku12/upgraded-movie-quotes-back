@@ -37,8 +37,7 @@ Route::middleware(['guest'])->group(function () {
 		Route::get('/google-callback', [OAuthController::class, 'callback']);
 	});
 });
-	Route::get('email/verify/{id}', [EmailVerificationController::class, 'verify'])->name('verification.verify'); // Make sure to keep this as your route name
-	Route::get('email/resend', [EmailVerificationController::class, 'resend'])->name('verification.resend');
+	Route::get('email/verify/{id}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
 
 Route::middleware(['auth:api'])->group(function () {
 	Route::post('/logout', [AuthController::class, 'logout']);

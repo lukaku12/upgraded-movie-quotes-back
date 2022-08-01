@@ -37,6 +37,6 @@ class OAuthController extends Controller
 
 			return redirect(env('FRONT_BASE_URL') . '/oauth?token=' . $token . '&type=bearer&expires_in=' . auth()->factory()->getTTL() * 60);
 		}
-		return redirect(env('FRONT_BASE_URL') . '/forbidden');
+		return redirect(env('FRONT_BASE_URL') . '/register?error=409');
 	}
 }

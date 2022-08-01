@@ -42,9 +42,13 @@ class AuthController extends Controller
 
 		if (!$token)
 		{
-			return response()->json(['error' => 'User Does not exist!'], 404);
+			return response()->json(['error' => 'User Does not exist!'], 401);
 		}
-
+		if (!auth()->user()->hasVerifiedEmail())
+		{
+			auth()->user()->sendEmailVerificationNotification();
+			return response()->json(['error' => 'Please verify your email first!'], 401);
+		}
 		return $this->respondWithToken($token);
 	}
 
