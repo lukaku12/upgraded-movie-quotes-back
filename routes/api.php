@@ -58,11 +58,10 @@ Route::middleware(['auth:api'])->group(function () {
 	Route::post('/comment/add', [CommentController::class, 'index']);
 	Route::post('/like/add', [LikeController::class, 'index']);
 	Route::post('/like/remove', [LikeController::class, 'destroy']);
-	Route::post('/movies/{slug}/quote/add', [QuoteController::class, 'addQuoteForMovie']);
 	Route::get('/movies/{slug}/quote/{id}', [QuoteController::class, 'show']);
 	Route::post('/movies/{slug}/quote/{id}', [QuoteController::class, 'update']);
 	Route::post('/quotes/create', [QuoteController::class, 'store']);
-	Route::delete('/movies/{slug}/quote/{id}', [QuoteController::class, 'destroy']);
+	Route::post('/movies/{slug}/quote/{id}/remove', [QuoteController::class, 'destroy']);
 
 	Route::post('/notify-user', [NotificationController::class, 'index']);
 	Route::get('/notifications', [NotificationController::class, 'getUserNotifications']);

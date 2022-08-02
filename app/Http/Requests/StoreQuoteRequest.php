@@ -24,10 +24,10 @@ class StoreQuoteRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'titleEn'     => 'required|min:3|max:200|unique:movies,title',
-			'titleKa'     => 'required|min:3|max:200|unique:movies,title',
-			'movie_id'    => 'required',
-			'thumbnail'   => 'required|image',
+			'title_en'     => 'required|min:3|max:200|unique:movies,title',
+			'title_ka'     => 'required|min:3|max:200|unique:movies,title',
+			'movie_id'     => 'required',
+			'thumbnail'    => 'required|image',
 		];
 	}
 }
