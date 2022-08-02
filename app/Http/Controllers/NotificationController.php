@@ -20,14 +20,6 @@ class NotificationController extends Controller
 		{
 			return response()->json('You cannot notify yourself');
 		}
-		// check if like notification already exists
-		if ($request['message'] === 'Reacted to your quote')
-		{
-			if (Notification::where('user_id', $request['user_id'])->where('quote_id', $request['quote_id'])->first())
-			{
-				return response()->json('You have already liked this quote');
-			}
-		}
 
 		$data = [
 			'user_id'  => $request['user_id'],
@@ -50,7 +42,7 @@ class NotificationController extends Controller
 		], 200);
 	}
 
-	public function updateNotifications()
+	public function updateNotifications(): JsonResponse
 	{
 		$notifications = $this->getNotifications();
 
@@ -62,7 +54,7 @@ class NotificationController extends Controller
 			]);
 		}
 
-		return $notifications;
+		return response()->json($notifications);
 	}
 
 	public function getUserNotifications(): JsonResponse
