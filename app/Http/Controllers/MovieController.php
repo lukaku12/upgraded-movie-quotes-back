@@ -84,6 +84,10 @@ class MovieController extends Controller
 		$movie = Movie::where('slug', $slug)->first();
 		if ($movie)
 		{
+			if (!Gate::allows('view-movie', $movie))
+			{
+				abort(403);
+			}
 			return response()->json($movie);
 		}
 		return response(['error' => true, 'error-msg' => 'Not found'], 404);
@@ -93,48 +97,53 @@ class MovieController extends Controller
 	{
 		$movie = Movie::where('slug', $slug)->first();
 
-		$genres = MovieGenre::where('movie_id', $movie->id)->get();
-
-		foreach ($genres as $genre)
-		{
-			$genre->delete();
-		}
-
-		$data = [
-			'user_id'   => auth()->id(),
-			'slug'      => strtolower(str_replace('.', '', str_replace(' ', '-', $request->title_en))),
-			'title'     => [
-				'en' => $request->title_en,
-				'ka' => $request->title_ka,
-			],
-			'director' => [
-				'en' => $request->director_en,
-				'ka' => $request->director_ka,
-			],
-			'description' => [
-				'en' => $request->description_en,
-				'ka' => $request->description_ka,
-			],
-		];
-		if ($request->thumbnail)
-		{
-			$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
-			$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
-			$data['thumbnail'] = $correctThumbnailPath;
-		}
-
-		$genres = json_decode($request->genres);
-
-		foreach ($genres as $genre)
-		{
-			MovieGenre::create([
-				'movie_id' => $movie->id,
-				'genre_id' => $genre,
-			]);
-		}
-
 		if ($movie)
 		{
+			if (!Gate::allows('view-movie', $movie))
+			{
+				abort(403);
+			}
+
+			$genres = MovieGenre::where('movie_id', $movie->id)->get();
+
+			foreach ($genres as $genre)
+			{
+				$genre->delete();
+			}
+
+			$data = [
+				'user_id'   => auth()->id(),
+				'slug'      => strtolower(str_replace('.', '', str_replace(' ', '-', $request->title_en))),
+				'title'     => [
+					'en' => $request->title_en,
+					'ka' => $request->title_ka,
+				],
+				'director' => [
+					'en' => $request->director_en,
+					'ka' => $request->director_ka,
+				],
+				'description' => [
+					'en' => $request->description_en,
+					'ka' => $request->description_ka,
+				],
+			];
+			if ($request->thumbnail)
+			{
+				$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
+				$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
+				$data['thumbnail'] = $correctThumbnailPath;
+			}
+
+			$genres = json_decode($request->genres);
+
+			foreach ($genres as $genre)
+			{
+				MovieGenre::create([
+					'movie_id' => $movie->id,
+					'genre_id' => $genre,
+				]);
+			}
+
 			$movie->update($data);
 			return response()->json($data);
 		}
@@ -147,6 +156,10 @@ class MovieController extends Controller
 
 		if ($movie)
 		{
+			if (!Gate::allows('view-movie', $movie))
+			{
+				abort(403);
+			}
 			$movie->delete();
 			return response(['error-msg' => 'Movie Deleted Successfully'], 200);
 		}
