@@ -68,13 +68,7 @@ class MovieController extends Controller
 
 		$genres = json_decode($request->genres);
 
-		foreach ($genres as $genre)
-		{
-			MovieGenre::create([
-				'movie_id' => $movie->id,
-				'genre_id' => $genre,
-			]);
-		}
+		$movie->genres()->attach($genres);
 
 		return response()->json($movie, 200);
 	}
