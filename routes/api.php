@@ -45,25 +45,35 @@ Route::middleware(['auth:api'])->group(function () {
 	Route::get('/user', [UserController::class, 'index']);
 	Route::post('/user', [UserController::class, 'update']);
 
-	Route::get('/movies', [MovieController::class, 'index']);
-	Route::get('/movies/{slug}', [MovieController::class, 'show']);
-	Route::get('/movies/{slug}/edit', [MovieController::class, 'editMovie']);
-	Route::post('/movies/{slug}/edit', [MovieController::class, 'updateMovie']);
-	Route::post('/movies/{slug}/remove', [MovieController::class, 'destroy']);
-	Route::post('/movies/add', [MovieController::class, 'store']);
+	Route::controller(MovieController::class)->group(function () {
+		Route::get('/movies', 'index');
+		Route::get('/movies/{slug}','show');
+		Route::get('/movies/{slug}/edit','editMovie');
+		Route::post('/movies/{slug}/edit', 'updateMovie');
+		Route::post('/movies/{slug}/remove', 'destroy');
+		Route::post('/movies/add', 'store');
+	});
+
+	Route::controller(QuoteController::class)->group(function () {
+		Route::get('/quotes', 'index');
+		Route::get('/movies/{slug}/quote/{id}', 'show');
+		Route::post('/movies/{slug}/quote/{id}', 'update');
+		Route::post('/quotes/create', 'store');
+		Route::post('/movies/{slug}/quote/{id}/remove', 'destroy');
+	});
+
+	Route::controller(NotificationController::class)->group(function () {
+		Route::post('/notify-user', 'index');
+		Route::get('/notifications', 'getUserNotifications');
+		Route::post('/notifications/read-all', 'updateNotifications');
+	});
+
 	Route::get('/genres', [GenreController::class, 'index']);
 
 	Route::post('/search', [SearchController::class, 'search']);
-	Route::get('/quotes', [QuoteController::class, 'index']);
+
 	Route::post('/comment/add', [CommentController::class, 'index']);
 	Route::post('/like/add', [LikeController::class, 'index']);
 	Route::post('/like/remove', [LikeController::class, 'destroy']);
-	Route::get('/movies/{slug}/quote/{id}', [QuoteController::class, 'show']);
-	Route::post('/movies/{slug}/quote/{id}', [QuoteController::class, 'update']);
-	Route::post('/quotes/create', [QuoteController::class, 'store']);
-	Route::post('/movies/{slug}/quote/{id}/remove', [QuoteController::class, 'destroy']);
 
-	Route::post('/notify-user', [NotificationController::class, 'index']);
-	Route::get('/notifications', [NotificationController::class, 'getUserNotifications']);
-	Route::post('/notifications/read-all', [NotificationController::class, 'updateNotifications']);
 });
