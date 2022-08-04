@@ -17,15 +17,15 @@ class CommentController extends Controller
 			'user_id'     => auth()->user()->id,
 		];
 
-		$savedData = Comment::create($data);
+		$comment = Comment::create($data);
 
-		$savedData['username'] = $savedData->user->username;
-		$savedData['picture'] = $savedData->user->picture;
-		$savedData['body'] = $request->comment_body;
-		unset($savedData['user']);
+		$comment['username'] = $comment->user->username;
+		$comment['picture'] = $comment->user->picture;
+		$comment['body'] = $request->comment_body;
+		unset($comment['user']);
 
 		broadcast(
-			(new AddComment([$savedData]))->dontBroadcastToCurrentUser()
+			(new AddComment([$comment]))->dontBroadcastToCurrentUser()
 		);
 
 		return response()->json('Comment Added successfully!', 200);
