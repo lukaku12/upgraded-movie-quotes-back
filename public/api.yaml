@@ -1,0 +1,26 @@
+openapi: 3.0.0
+info:
+  title: Chad Movie Quotes API
+  description: Here goes description
+  version: 0.1.9
+
+servers:
+  - url: http://localhost:8000/api
+    description: local server
+  - url: https://producation.app/api
+    description: production server
+
+paths:
+  /register/create:
+    post:
+      summary: Returns a list of users.
+      responses:
+        '200':
+          description: Successful Message
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: User name
