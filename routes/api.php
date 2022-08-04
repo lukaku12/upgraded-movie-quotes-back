@@ -47,10 +47,10 @@ Route::middleware(['auth:api'])->group(function () {
 
 	Route::controller(MovieController::class)->group(function () {
 		Route::get('/movies', 'index');
-		Route::get('/movies/{slug}', 'show');
-		Route::get('/movies/{slug}/edit', 'edit');
-		Route::post('/movies/{slug}/edit', 'update');
-		Route::post('/movies/{slug}/remove', 'destroy');
+		Route::get('/movies/{movie:slug}', 'show');
+		Route::get('/movies/{movie:slug}/edit', 'edit');
+		Route::post('/movies/{movie:slug}/edit', 'update');
+		Route::post('/movies/{movie:slug}/remove', 'destroy');
 		Route::post('/movies/add', 'store');
 	});
 
