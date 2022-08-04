@@ -38,7 +38,6 @@ class RegisterTest extends TestCase
 			'confirm_password' => 'password',
 		]);
 
-		$response
-			->assertStatus(200);
+		$response->assertStatus(200);
 	}
 }

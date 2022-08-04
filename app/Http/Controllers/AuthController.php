@@ -6,7 +6,6 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\AuthRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -15,13 +14,9 @@ class AuthController extends Controller
 	 */
 	public function register(RegisterRequest $request): JsonResponse
 	{
-		$user = User::create([
-			'username'     => $request->username,
-			'email'        => $request->email,
-			'password'     => Hash::make($request->password),
-		]);
+		$user = User::create($request->validated());
 
-		auth()->attempt($request->all());
+		auth()->attempt($request->validated());
 
 		$user->sendEmailVerificationNotification();
 
