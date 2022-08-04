@@ -14,16 +14,11 @@ class QuoteController extends Controller
 {
 	public function index(): Response|JsonResponse
 	{
-		$quotes = Quote::with(['movie', 'user', 'comments', 'likes'])->orderBy('created_at', 'DESC')->paginate(5);
-		foreach ($quotes as $quote)
-		{
-			foreach ($quote->comments as $comment)
-			{
-				$commentAuthor = User::where('id', $comment->user_id)->get(['username', 'picture']);
-				$comment['username'] = $commentAuthor[0]->username;
-				$comment['picture'] = $commentAuthor[0]->picture;
-			}
-		}
+		$quotes =
+			Quote::with(['movie', 'user', 'comments.user', 'likes'])
+				->orderBy('created_at', 'DESC')
+				->paginate(5);
+
 		return response()->json($quotes, 200);
 	}
 
