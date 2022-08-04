@@ -68,7 +68,7 @@ class QuoteController extends Controller
 
 			return response()->json($quote);
 		}
-		return response(['error' => true, 'error-msg' => 'Not found'], 404);
+		return response('Not found', 404);
 	}
 
 	public function update($quote, $id, UpdateQuoteRequest $request): JsonResponse
@@ -98,7 +98,7 @@ class QuoteController extends Controller
 
 			return response()->json('Quote updated successfully!', 200);
 		}
-		return response()->json(['error' => true, 'error-msg' => 'Not found'], 404);
+		return response()->json('Not found', 404);
 	}
 
 	public function destroy($slug, $id): Response|JsonResponse
@@ -114,6 +114,6 @@ class QuoteController extends Controller
 			return response()->json('Quote deleted successfully!', 200);
 		}
 
-		return response(['error' => true, 'error-msg' => 'Not found'], 404);
+		return response('Not found', 404);
 	}
 }

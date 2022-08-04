@@ -37,12 +37,12 @@ class AuthController extends Controller
 
 		if (!$token)
 		{
-			return response()->json(['error' => 'User Does not exist!'], 401);
+			return response()->json('User Does not exist!', 401);
 		}
 		if (!auth()->user()->hasVerifiedEmail())
 		{
 			auth()->user()->sendEmailVerificationNotification();
-			return response()->json(['error' => 'Please verify your email first!'], 401);
+			return response()->json('Please verify your email first!', 401);
 		}
 		return $this->respondWithToken($token);
 	}
@@ -54,7 +54,7 @@ class AuthController extends Controller
 	{
 		auth()->logout();
 
-		return response()->json(['message' => 'Successfully logged out']);
+		return response()->json('Successfully logged out');
 	}
 
 	/**

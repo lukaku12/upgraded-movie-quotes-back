@@ -38,7 +38,7 @@ class MovieController extends Controller
 
 			return response()->json($movie);
 		}
-		return response(['error' => true, 'error-msg' => 'Not found'], 404);
+		return response()->json('Not found', 404);
 	}
 
 	public function store(AddMovieRequest $request): JsonResponse
@@ -90,7 +90,7 @@ class MovieController extends Controller
 			}
 			return response()->json($movie);
 		}
-		return response(['error' => true, 'error-msg' => 'Not found'], 404);
+		return response()->json('Not found', 404);
 	}
 
 	public function updateMovie(UpdateMovieRequest $request, $slug): Response|JsonResponse
@@ -147,7 +147,7 @@ class MovieController extends Controller
 			$movie->update($data);
 			return response()->json($data);
 		}
-		return response(['error' => true, 'error-msg' => 'Not found'], 404);
+		return response()->json('Not found', 404);
 	}
 
 	public function destroy($slug): Response|JsonResponse
@@ -161,8 +161,8 @@ class MovieController extends Controller
 				abort(403);
 			}
 			$movie->delete();
-			return response(['error-msg' => 'Movie Deleted Successfully'], 200);
+			return response()->json('Movie Deleted Successfully', 200);
 		}
-		return response(['error' => true, 'error-msg' => 'Not found'], 404);
+		return response()->json('Not found', 404);
 	}
 }

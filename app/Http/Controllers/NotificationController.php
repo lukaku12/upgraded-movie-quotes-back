@@ -37,9 +37,7 @@ class NotificationController extends Controller
 		broadcast(
 			(new NotifyUser([$message], $message['quote_author_id']))->dontBroadcastToCurrentUser()
 		);
-		return response()->json([
-			'message' => 'Notification Sent successfully',
-		], 200);
+		return response()->json('Notification Sent successfully', 200);
 	}
 
 	public function updateNotifications(): JsonResponse
@@ -61,7 +59,7 @@ class NotificationController extends Controller
 	{
 		$notifications = $this->getNotifications();
 
-		return response()->json(['data' => $notifications], 200);
+		return response()->json($notifications, 200);
 	}
 
 	/**
