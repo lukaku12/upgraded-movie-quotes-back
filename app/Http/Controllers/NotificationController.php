@@ -18,7 +18,7 @@ class NotificationController extends Controller
 		// don't save notification if user is the same as the quote user
 		if ($request['user_id'] == $quote_user_id)
 		{
-			return response()->json('You cannot notify yourself');
+			return response()->json('You cannot notify yourself', 200);
 		}
 
 		$data = [
@@ -52,7 +52,7 @@ class NotificationController extends Controller
 			]);
 		}
 
-		return response()->json($notifications);
+		return response()->json($notifications, 200);
 	}
 
 	public function getUserNotifications(): JsonResponse

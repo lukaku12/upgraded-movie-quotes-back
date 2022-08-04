@@ -19,7 +19,7 @@ class SearchController extends Controller
 				$quote = $this->getMovie_quote($quote);
 				$quote['user'] = $quote->user()->get(['username', 'picture'])->first();
 			}
-			return response()->json($quotes_collection);
+			return response()->json($quotes_collection, 200);
 		}
 		if ($request->type === 'movie')
 		{
@@ -39,7 +39,7 @@ class SearchController extends Controller
 				}
 			}
 
-			return response()->json($movie_quotes);
+			return response()->json($movie_quotes, 200);
 		}
 		return response()->json('Invalid search type', 400);
 	}

@@ -16,7 +16,7 @@ class MovieController extends Controller
 	{
 		$movies = Movie::where('user_id', auth()->id())->with('quotes')->get();
 
-		return response()->json($movies);
+		return response()->json($movies, 200);
 	}
 
 	public function show($slug): JsonResponse|Response
@@ -36,7 +36,7 @@ class MovieController extends Controller
 				$quote->comments = $quote->comments()->get();
 			}
 
-			return response()->json($movie);
+			return response()->json($movie, 200);
 		}
 		return response()->json('Not found', 404);
 	}
@@ -76,7 +76,7 @@ class MovieController extends Controller
 			]);
 		}
 
-		return response()->json($movie);
+		return response()->json($movie, 200);
 	}
 
 	public function editMovie($slug): Response|JsonResponse
@@ -88,7 +88,7 @@ class MovieController extends Controller
 			{
 				abort(403);
 			}
-			return response()->json($movie);
+			return response()->json($movie, 200);
 		}
 		return response()->json('Not found', 404);
 	}
@@ -145,7 +145,7 @@ class MovieController extends Controller
 			}
 
 			$movie->update($data);
-			return response()->json($data);
+			return response()->json($data, 200);
 		}
 		return response()->json('Not found', 404);
 	}

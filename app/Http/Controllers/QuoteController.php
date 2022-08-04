@@ -66,7 +66,7 @@ class QuoteController extends Controller
 				$comment['picture'] = $commentAuthor[0]->picture;
 			}
 
-			return response()->json($quote);
+			return response()->json($quote, 200);
 		}
 		return response('Not found', 404);
 	}

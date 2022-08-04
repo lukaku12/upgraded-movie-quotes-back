@@ -11,6 +11,6 @@ class GenreController extends Controller
 	{
 		$genres = Genre::all();
 
-		return response()->json($genres);
+		return response()->json($genres, 200);
 	}
 }
