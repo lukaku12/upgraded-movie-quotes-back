@@ -79,7 +79,7 @@ class MovieController extends Controller
 		return response()->json($movie, 200);
 	}
 
-	public function editMovie($slug): Response|JsonResponse
+	public function edit($slug): Response|JsonResponse
 	{
 		$movie = Movie::where('slug', $slug)->first();
 		if ($movie)
@@ -93,7 +93,7 @@ class MovieController extends Controller
 		return response()->json('Not found', 404);
 	}
 
-	public function updateMovie(UpdateMovieRequest $request, $slug): Response|JsonResponse
+	public function update(UpdateMovieRequest $request, $slug): Response|JsonResponse
 	{
 		$movie = Movie::firstWhere('slug', $slug);
 
@@ -104,12 +104,7 @@ class MovieController extends Controller
 				abort(403);
 			}
 
-			$genres = MovieGenre::where('movie_id', $movie->id)->get();
-
-			foreach ($genres as $genre)
-			{
-				$genre->delete();
-			}
+			$movie->genres()->detach();
 
 			$data = [
 				'user_id'   => auth()->id(),

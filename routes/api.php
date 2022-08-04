@@ -47,9 +47,9 @@ Route::middleware(['auth:api'])->group(function () {
 
 	Route::controller(MovieController::class)->group(function () {
 		Route::get('/movies', 'index');
-		Route::get('/movies/{slug}','show');
-		Route::get('/movies/{slug}/edit','editMovie');
-		Route::post('/movies/{slug}/edit', 'updateMovie');
+		Route::get('/movies/{slug}', 'show');
+		Route::get('/movies/{slug}/edit', 'edit');
+		Route::post('/movies/{slug}/edit', 'update');
 		Route::post('/movies/{slug}/remove', 'destroy');
 		Route::post('/movies/add', 'store');
 	});
@@ -75,5 +75,4 @@ Route::middleware(['auth:api'])->group(function () {
 	Route::post('/comment/add', [CommentController::class, 'index']);
 	Route::post('/like/add', [LikeController::class, 'index']);
 	Route::post('/like/remove', [LikeController::class, 'destroy']);
-
 });
