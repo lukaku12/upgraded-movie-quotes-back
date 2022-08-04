@@ -48,7 +48,7 @@ class PasswordResetController extends Controller
 		User::where('email', $request->email)
 			->update(['password' => bcrypt($request->password)]);
 
-		DB::table('password_resets')->where(['email'=> $request->email])->delete();
+		$updatePassword->delete();
 
 		return response()->json('Password updated successfully', 200);
 	}
