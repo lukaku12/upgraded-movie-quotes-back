@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Movie;
+use App\Models\Notification;
+use App\Models\Quote;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -17,8 +20,8 @@ class UserTest extends TestCase
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
 		$this->postJson('/api/login', [
-			'email'      => $user->email,
-			'password'   => 'password',
+			'email'    => $user->email,
+			'password' => 'password',
 		])->assertStatus(200);
 
 		$response = $this->getJson('/api/user');
@@ -39,8 +42,8 @@ class UserTest extends TestCase
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
 		$this->postJson('/api/login', [
-			'email'      => $user->email,
-			'password'   => 'password',
+			'email'    => $user->email,
+			'password' => 'password',
 		])->assertStatus(200);
 
 		$response = $this->postJson('/api/user', [
@@ -52,5 +55,38 @@ class UserTest extends TestCase
 
 		$response
 			->assertStatus(200);
+	}
+
+	/** @test */
+	public function test_a_post_has_many_movies()
+	{
+		$user = User::factory()->create();
+		$movie = Movie::factory()->create(['user_id' => $user->id]);
+
+		$this->assertTrue($user->movies->contains($movie));
+	}
+
+	/** @test */
+	public function test_a_post_has_many_quotes()
+	{
+		$user = User::factory()->create();
+		$quote = Quote::factory()->create(['user_id' => $user->id]);
+
+		$this->assertTrue($user->quotes->contains($quote));
+	}
+
+	/** @test */
+	public function test_a_post_has_many_notifications()
+	{
+		$user = User::factory()->create();
+		$quote = Quote::factory()->create();
+		$notifications = Notification::create([
+			'user_id'  => $user->id,
+			'quote_id' => $quote->id,
+			'type'     => 'test',
+			'message'  => 'test',
+		]);
+
+		$this->assertTrue($user->notifications->contains($notifications));
 	}
 }

@@ -92,4 +92,31 @@ class LikeTest extends TestCase
 		$response
 			->assertStatus(200);
 	}
+
+	/** @test */
+	public function a_like_belongs_to_a_quote()
+	{
+		$user = User::factory()->create();
+		$quote = Quote::factory()->create([
+			'user_id' => $user->id,
+		]);
+		$like = Like::create([
+			'user_id'  => $user->id,
+			'quote_id' => $quote->id,
+		]);
+
+		// Method 1:
+		$this->assertInstanceOf(Quote::class, $like->quote);
+	}
+
+	/** @test */
+	public function a_like_belongs_to_a_user()
+	{
+		$user = User::factory()->create();
+		$quote = Quote::factory()->create();
+		$like = Like::create(['user_id' => $user->id, 'quote_id' => $quote->id]);
+
+		// Method 1:
+		$this->assertInstanceOf(User::class, $like->user);
+	}
 }

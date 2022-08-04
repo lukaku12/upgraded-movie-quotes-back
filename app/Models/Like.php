@@ -13,12 +13,12 @@ class Like extends Model
 	protected $guarded = ['id'];
 
 	public function quote(): BelongsTo
-    {
+	{
 		return $this->belongsTo(Quote::class);
 	}
 
 	public function user(): BelongsTo
-    {
+	{
 		return $this->belongsTo(User::class, 'user_id');
 	}
 }

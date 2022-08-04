@@ -96,7 +96,7 @@ class QuoteController extends Controller
 			}
 			$quote->update($data);
 
-			return response()->json('Quote updated successfuly!', 200);
+			return response()->json('Quote updated successfully!', 200);
 		}
 		return response()->json(['error' => true, 'error-msg' => 'Not found'], 404);
 	}

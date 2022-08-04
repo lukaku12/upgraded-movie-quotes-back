@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Comment;
 use App\Models\Quote;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -50,5 +51,18 @@ class CommentTest extends TestCase
 		]);
 
 		$response->assertStatus(200);
+	}
+
+	/** @test */
+	public function a_comment_belongs_to_a_quote()
+	{
+		$user = User::factory()->create();
+		$quote = Quote::factory()->create();
+		$comment = Comment::create([
+			'quote_id' => $quote->id,
+			'user_id'  => $user->id,
+			'body'     => 'This is a comment',
+		]);
+		$this->assertInstanceOf(Quote::class, $comment->quote);
 	}
 }
