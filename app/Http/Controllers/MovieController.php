@@ -95,7 +95,7 @@ class MovieController extends Controller
 
 	public function updateMovie(UpdateMovieRequest $request, $slug): Response|JsonResponse
 	{
-		$movie = Movie::where('slug', $slug)->first();
+		$movie = Movie::firstWhere('slug', $slug);
 
 		if ($movie)
 		{
