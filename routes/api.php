@@ -56,10 +56,10 @@ Route::middleware(['auth:api'])->group(function () {
 
 	Route::controller(QuoteController::class)->group(function () {
 		Route::get('/quotes', 'index');
-		Route::get('/movies/{slug}/quote/{id}', 'show');
-		Route::post('/movies/{slug}/quote/{id}', 'update');
+		Route::get('/movies/{movie:slug}/quote/{quote:id}', 'show');
+		Route::post('/movies/{movie:slug}/quote/{quote:id}', 'update');
 		Route::post('/quotes/create', 'store');
-		Route::post('/movies/{slug}/quote/{id}/remove', 'destroy');
+		Route::post('/movies/{movie:slug}/quote/{quote:id}/remove', 'destroy');
 	});
 
 	Route::controller(NotificationController::class)->group(function () {

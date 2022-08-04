@@ -48,72 +48,56 @@ class QuoteController extends Controller
 		return response()->json('Quote Added successfully!', 200);
 	}
 
-	public function show($slug, $id): Response|JsonResponse
+	public function show($slug, Quote $quote): Response|JsonResponse
 	{
-		$quote = Quote::where('id', $id)->with(['comments', 'likes'])->first();
-
-		if ($quote)
+		if (!Gate::allows('view-quotes', $quote))
 		{
-			if (!Gate::allows('view-quotes', $quote))
-			{
-				abort(403);
-			}
-
-			foreach ($quote->comments as $comment)
-			{
-				$commentAuthor = User::where('id', $comment->user_id)->get(['username', 'picture']);
-				$comment['username'] = $commentAuthor[0]->username;
-				$comment['picture'] = $commentAuthor[0]->picture;
-			}
-
-			return response()->json($quote, 200);
+			abort(403);
 		}
-		return response('Not found', 404);
+		$quote->load(['comments', 'likes']);
+
+		foreach ($quote->comments as $comment)
+		{
+			$commentAuthor = User::where('id', $comment->user_id)->get(['username', 'picture']);
+			$comment['username'] = $commentAuthor[0]->username;
+			$comment['picture'] = $commentAuthor[0]->picture;
+		}
+
+		return response()->json($quote, 200);
 	}
 
-	public function update($quote, $id, UpdateQuoteRequest $request): JsonResponse
+	public function update($slug, Quote $quote, UpdateQuoteRequest $request): JsonResponse
 	{
-		$quote = Quote::where('id', $id)->first();
-		if ($quote)
+		if (!Gate::allows('view-quotes', $quote))
 		{
-			if (!Gate::allows('view-quotes', $quote))
-			{
-				abort(403);
-			}
-			$data = [
-				'title'  => [
-					'en' => $request->title_en,
-					'ka' => $request->title_ka,
-				],
-				'user_id'     => auth()->user()->id,
-				'movie_id'    => $request->movie_id,
-			];
-			if ($request->thumbnail !== null)
-			{
-				$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
-				$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
-				$data['thumbnail'] = $correctThumbnailPath;
-			}
-			$quote->update($data);
-
-			return response()->json('Quote updated successfully!', 200);
+			abort(403);
 		}
-		return response()->json('Not found', 404);
+		$data = [
+			'title'  => [
+				'en' => $request->title_en,
+				'ka' => $request->title_ka,
+			],
+			'user_id'     => auth()->user()->id,
+			'movie_id'    => $request->movie_id,
+		];
+		if ($request->thumbnail !== null)
+		{
+			$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
+			$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
+			$data['thumbnail'] = $correctThumbnailPath;
+		}
+		$quote->update($data);
+
+		return response()->json('Quote updated successfully!', 200);
 	}
 
-	public function destroy($slug, $id): Response|JsonResponse
+	public function destroy($slug, Quote $quote): Response|JsonResponse
 	{
-		$quote = Quote::where('id', $id)->first();
-		if ($quote)
+		if (!Gate::allows('view-quotes', $quote))
 		{
-			if (!Gate::allows('view-quotes', $quote))
-			{
-				abort(403);
-			}
-			$quote->delete();
-			return response()->json('Quote deleted successfully!', 200);
+			abort(403);
 		}
-
-		return response('Not found', 404);
+		$quote->delete();
+		return response()->json('Quote deleted successfully!', 200);
 	}
 }
