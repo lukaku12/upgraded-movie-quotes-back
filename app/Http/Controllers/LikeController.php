@@ -14,7 +14,7 @@ class LikeController extends Controller
 	{
 		broadcast((new AddLike(['quote_id' => $request['quote_id'], 'user_id' => auth()->id()]))->dontBroadcastToCurrentUser());
 		// check if user has already liked this quote
-		if (Like::where('user_id', auth()->id())->where('quote_id', $request['quote_id'])->exists())
+		if (Like::where([['user_id', auth()->id()], ['quote_id', $request['quote_id']]])->exists())
 		{
 			return response()->json('You have already liked this quote', 400);
 		}
