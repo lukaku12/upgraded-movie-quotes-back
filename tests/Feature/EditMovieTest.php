@@ -27,7 +27,7 @@ class EditMovieTest extends TestCase
 
 		$response = $this->getJson('/api/movies/incorrect-movie-slug/edit');
 
-		$response->assertStatus(404)->assertJson(['error' => true]);
+		$response->assertStatus(404);
 	}
 
 	/* @test */
@@ -115,7 +115,7 @@ class EditMovieTest extends TestCase
 			'genres'            => json_encode([$genre1->id, $genre2->id]),
 		]);
 
-		$response->assertStatus(404)->assertJson(['error' => true]);
+		$response->assertStatus(404);
 	}
 
 	/* @test */
@@ -191,7 +191,7 @@ class EditMovieTest extends TestCase
 
 		$response = $this->postJson('/api/movies/invalid-slug/remove');
 
-		$response->assertStatus(404)->assertJson(['error' => true]);
+		$response->assertStatus(404);
 	}
 
 	/* @test */

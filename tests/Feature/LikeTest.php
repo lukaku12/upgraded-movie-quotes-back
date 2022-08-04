@@ -48,9 +48,7 @@ class LikeTest extends TestCase
 			'quote_id' => $quote->id,
 		]);
 
-		$response
-			->assertStatus(400)
-			->assertJson(['error-msg' => 'You have already liked this quote']);
+		$response->assertStatus(400);
 	}
 
 	/* @test */
@@ -105,7 +103,6 @@ class LikeTest extends TestCase
 			'quote_id' => $quote->id,
 		]);
 
-		// Method 1:
 		$this->assertInstanceOf(Quote::class, $like->quote);
 	}
 
@@ -116,7 +113,6 @@ class LikeTest extends TestCase
 		$quote = Quote::factory()->create();
 		$like = Like::create(['user_id' => $user->id, 'quote_id' => $quote->id]);
 
-		// Method 1:
 		$this->assertInstanceOf(User::class, $like->user);
 	}
 }

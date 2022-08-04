@@ -24,8 +24,7 @@ class MovieTest extends TestCase
 
 		$response = $this->getJson('/api/movies');
 
-		$response
-			->assertStatus(200);
+		$response->assertStatus(200);
 	}
 
 	/* @test */
@@ -42,9 +41,7 @@ class MovieTest extends TestCase
 
 		$response = $this->getJson('/api/movies/invalid-movie-slug');
 
-		$response
-			->assertStatus(404)
-			->assertJson(['error' => true]);
+		$response->assertStatus(404);
 	}
 
 	/* @test */

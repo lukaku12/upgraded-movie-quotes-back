@@ -13,7 +13,7 @@ class AuthTest extends TestCase
 	/* @test */
 	public function test_user_cant_login_if_provided_credentials_are_empty()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
+		User::factory()->create(['password' => bcrypt('password')]);
 
 		$response = $this->postJson('/api/login', [
 			'email'      => '',
@@ -35,9 +35,7 @@ class AuthTest extends TestCase
 			'password'   => 'not-valid-password',
 		]);
 
-		$response
-			->assertStatus(401)
-			->assertJson(['error' => 'User Does not exist!']);
+		$response->assertStatus(401);
 	}
 
 	public function test_user_cant_login_if_user_doesnt_have_verified_email()
@@ -49,9 +47,7 @@ class AuthTest extends TestCase
 			'password'   => 'password',
 		]);
 
-		$response
-			->assertStatus(401)
-			->assertJson(['error' => 'Please verify your email first!']);
+		$response->assertStatus(401);
 	}
 
 	public function test_user_can_login_if_credentials_are_right_and_has_verified_email()
@@ -85,8 +81,6 @@ class AuthTest extends TestCase
 
 		$response = $this->postJson('/api/logout');
 
-		$response
-			->assertStatus(200)
-			->assertJson(['message' => 'Successfully logged out']);
+		$response->assertStatus(200);
 	}
 }

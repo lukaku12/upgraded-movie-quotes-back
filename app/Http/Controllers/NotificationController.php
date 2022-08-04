@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotifyUser;
+use App\Http\Requests\NotificationRequest;
 use App\Models\Notification;
 use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
 
 class NotificationController extends Controller
 {
-	public function index(): JsonResponse
+	public function index(NotificationRequest $request): JsonResponse
 	{
-		$request = request()->all();
-
 		$quote_user_id = Quote::where('id', $request['quote_id'])->with('user')->pluck('user_id')->first();
 
 		// don't save notification if user is the same as the quote user
@@ -21,14 +20,7 @@ class NotificationController extends Controller
 			return response()->json('You cannot notify yourself', 200);
 		}
 
-		$data = [
-			'user_id'  => $request['user_id'],
-			'quote_id' => $request['quote_id'],
-			'message'  => $request['message'],
-			'read_at'  => $request['read_at'],
-		];
-
-		$message = Notification::create($data);
+		$message = Notification::create($request->validated());
 		$message['username'] = $message->user->username;
 		$message['quote_author_id'] = $message->quote->user->id;
 

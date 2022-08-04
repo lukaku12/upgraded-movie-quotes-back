@@ -52,9 +52,7 @@ class NotificationTest extends TestCase
 			'read_at'  => null,
 		]);
 
-		$response
-			->assertStatus(200)
-			->assertJson(['message' => 'Notification Sent successfully']);
+		$response->assertStatus(200);
 	}
 
 	/* @test */
