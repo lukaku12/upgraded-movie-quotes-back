@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['guest'])->group(function () {
-	Route::post('/register/create', [AuthController::class, 'register'])->name('register');
+	Route::post('/register', [AuthController::class, 'register'])->name('register');
 	Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 	Route::post('/forget-password', [PasswordResetController::class, 'submitForgetPasswordForm'])->name('password.forget');
@@ -47,32 +47,31 @@ Route::middleware(['auth:api'])->group(function () {
 
 	Route::controller(MovieController::class)->group(function () {
 		Route::get('/movies', 'index')->name('movies.get');
+		Route::post('/movies', 'store')->name('movies.store');
 		Route::get('/movies/{movie:slug}', 'show')->name('movies.show');
-		Route::get('/movies/{movie:slug}/edit', 'edit')->name('movies.edit');
-		Route::post('/movies/{movie:slug}/edit', 'update')->name('movies.update');
-		Route::post('/movies/{movie:slug}/remove', 'destroy')->name('movies.destroy');
-		Route::post('/movies/add', 'store')->name('movies.store');
+		Route::post('/movies/{movie:slug}', 'update')->name('movies.update');
+		Route::delete('/movies/{movie:slug}', 'destroy')->name('movies.destroy');
 	});
 
 	Route::controller(QuoteController::class)->group(function () {
 		Route::get('/quotes', 'index')->name('quotes.get');
+		Route::post('/quotes/create', 'store')->name('quotes.store');
 		Route::get('/movies/{movie:slug}/quote/{quote:id}', 'show')->name('quotes.show');
 		Route::post('/movies/{movie:slug}/quote/{quote:id}', 'update')->name('quotes.update');
-		Route::post('/quotes/create', 'store')->name('quotes.store');
-		Route::post('/movies/{movie:slug}/quote/{quote:id}/remove', 'destroy')->name('quotes.destroy');
+		Route::delete('/movies/{movie:slug}/quote/{quote:id}', 'destroy')->name('quotes.destroy');
 	});
 
 	Route::controller(NotificationController::class)->group(function () {
-		Route::post('/notify-user', 'index')->name('notifications.get');
-		Route::get('/notifications', 'getUserNotifications')->name('notifications.get-user-notifications');
-		Route::post('/notifications/read-all', 'updateNotifications')->name('notifications.update-notifications');
+		Route::get('/notifications', 'getUserNotifications')->name('notifications.get');
+		Route::post('/notifications/read-all', 'updateNotifications')->name('notifications.update');
+		Route::post('/notify-user', 'index')->name('notifications.store');
 	});
 
 	Route::get('/genres', [GenreController::class, 'index'])->name('genres.get');
 
 	Route::post('/search', [SearchController::class, 'search'])->name('search');
 
-	Route::post('/comment/add', [CommentController::class, 'index'])->name('comment.store');
-	Route::post('/like/add', [LikeController::class, 'index'])->name('like.store');
-	Route::post('/like/remove', [LikeController::class, 'destroy'])->name('like.destroy');
+	Route::post('/comment', [CommentController::class, 'index'])->name('comment.store');
+	Route::post('/like', [LikeController::class, 'index'])->name('like.store');
+	Route::delete('/like', [LikeController::class, 'destroy'])->name('like.destroy');
 });

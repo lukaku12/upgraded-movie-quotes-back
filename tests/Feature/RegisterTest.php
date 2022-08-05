@@ -14,7 +14,7 @@ class RegisterTest extends TestCase
 	{
 		$this->withExceptionHandling();
 
-		$response = $this->postJson('/api/register/create', [
+		$response = $this->postJson(route('register'), [
 			'username'         => '',
 			'email'            => '',
 			'password'         => '',
@@ -31,7 +31,7 @@ class RegisterTest extends TestCase
 	{
 		$this->withExceptionHandling();
 
-		$response = $this->postJson('/api/register/create', [
+		$response = $this->postJson(route('register'), [
 			'username'         => 'luka',
 			'email'            => 'lukakurdadze2@gmail.com',
 			'password'         => 'password',

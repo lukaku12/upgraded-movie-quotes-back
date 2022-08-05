@@ -63,15 +63,6 @@ class MovieController extends Controller
 		return response()->json($movie, 200);
 	}
 
-	public function edit(Movie $movie): Response|JsonResponse
-	{
-		if (!Gate::allows('view-movie', $movie))
-		{
-			abort(403);
-		}
-		return response()->json($movie, 200);
-	}
-
 	public function update(UpdateMovieRequest $request, Movie $movie): Response|JsonResponse
 	{
 		if (!Gate::allows('view-movie', $movie))

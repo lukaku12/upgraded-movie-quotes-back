@@ -15,7 +15,7 @@ class PasswordResetTest extends TestCase
 
 	public function test_show_error_massage_if_user_does_not_enter_valid_email()
 	{
-		$response = $this->postJson('/api/forget-password', ['email' => 'test@test.com']);
+		$response = $this->postJson(route('password.forget'), ['email' => 'test@test.com']);
 
 		$response->assertStatus(422);
 	}
@@ -26,7 +26,7 @@ class PasswordResetTest extends TestCase
 
 		$user = User::factory()->create(['email' => 'lukakurdadze2@gmail.com']);
 
-		$response = $this->postJson('/api/forget-password', ['email' => $user->email]);
+		$response = $this->postJson(route('password.forget'), ['email' => $user->email]);
 
 		$response->assertStatus(200);
 	}
@@ -35,7 +35,7 @@ class PasswordResetTest extends TestCase
 	{
 		$this->withExceptionHandling();
 
-		$response = $this->postJson('/api/reset-password', ['password' => 'test12345', 'password_confirmation' => 'test']);
+		$response = $this->postJson(route('password.reset'), ['password' => 'test12345', 'password_confirmation' => 'test']);
 
 		$response->assertStatus(422)->assertJson(['errors' => true]);
 	}
@@ -54,7 +54,7 @@ class PasswordResetTest extends TestCase
 			'created_at' => Carbon::now(),
 		]);
 
-		$response = $this->postJson('/api/reset-password', [
+		$response = $this->postJson(route('password.reset'), [
 			'email'                 => $user->email,
 			'password'              => 'password',
 			'password_confirmation' => 'password',
@@ -77,7 +77,7 @@ class PasswordResetTest extends TestCase
 			'created_at' => Carbon::now(),
 		]);
 
-		$response = $this->postJson('/api/reset-password', [
+		$response = $this->postJson(route('password.reset'), [
 			'email'                 => $user->email,
 			'password'              => 'password',
 			'password_confirmation' => 'password',

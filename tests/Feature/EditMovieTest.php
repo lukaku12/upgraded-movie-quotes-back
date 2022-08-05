@@ -18,9 +18,9 @@ class EditMovieTest extends TestCase
 	public function test_user_cant_get_movie_data_if_movie_slug_is_not_valid()
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
-		$genre1 = Genre::create(['name' => 'Genre 1']);
+		Genre::create(['name' => 'Genre 1']);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
@@ -40,12 +40,12 @@ class EditMovieTest extends TestCase
 
 		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->getJson("/api/movies/$movie->slug/edit");
+		$response = $this->getJson(route('movies.show', $movie->slug));
 
 		$response->assertStatus(403);
 	}
@@ -59,12 +59,12 @@ class EditMovieTest extends TestCase
 
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->getJson("/api/movies/$movie->slug/edit");
+		$response = $this->getJson(route('movies.show', $movie->slug));
 
 		$response->assertStatus(200);
 	}
@@ -76,12 +76,12 @@ class EditMovieTest extends TestCase
 
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/edit", [
+		$response = $this->postJson(route('movies.update', $movie->slug), [
 			'title'       => '',
 			'genre_id'    => '',
 			'year'        => '',
@@ -100,12 +100,12 @@ class EditMovieTest extends TestCase
 		$genre1 = Genre::create(['name' => 'Genre 1']);
 		$genre2 = Genre::create(['name' => 'Genre 2']);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/movies/incorrect-movie-slug/edit', [
+		$response = $this->postJson(route('movies.update', 'incorrect-slug'), [
 			'title_en'          => 'New title',
 			'title_ka'          => 'ახალი სათაური',
 			'description_en'    => 'New description',
@@ -130,12 +130,12 @@ class EditMovieTest extends TestCase
 		$genre1 = Genre::create(['name' => 'Genre 1']);
 		$genre2 = Genre::create(['name' => 'Genre 2']);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/edit", [
+		$response = $this->postJson(route('movies.update', $movie->slug), [
 			'title_en'          => 'New title',
 			'title_ka'          => 'ახალი სათაური',
 			'description_en'    => 'New description',
@@ -158,12 +158,12 @@ class EditMovieTest extends TestCase
 		$genre2 = Genre::create(['name' => 'Genre 2']);
 		MovieGenre::create(['movie_id' => $movie->id, 'genre_id' => $genre1->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/edit", [
+		$response = $this->postJson(route('movies.update', $movie->slug), [
 			'title_en'          => 'New title',
 			'title_ka'          => 'ახალი სათაური',
 			'description_en'    => 'New description',
@@ -184,12 +184,12 @@ class EditMovieTest extends TestCase
 
 		Movie::factory()->create(['user_id' => $user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/movies/invalid-slug/remove');
+		$response = $this->deleteJson(route('movies.destroy', 'incorrect-slug'));
 
 		$response->assertStatus(404);
 	}
@@ -204,12 +204,12 @@ class EditMovieTest extends TestCase
 
 		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/remove");
+		$response = $this->deleteJson(route('movies.destroy', $movie->slug));
 
 		$response->assertStatus(403);
 	}
@@ -221,12 +221,12 @@ class EditMovieTest extends TestCase
 
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/remove");
+		$response = $this->deleteJson(route('movies.destroy', $movie->slug));
 
 		$response->assertStatus(200);
 	}

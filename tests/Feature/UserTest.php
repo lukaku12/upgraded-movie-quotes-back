@@ -19,12 +19,12 @@ class UserTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'    => $user->email,
 			'password' => 'password',
 		])->assertStatus(200);
 
-		$response = $this->getJson('/api/user');
+		$response = $this->getJson(route('user.get'));
 
 		$response
 			->assertStatus(200)
@@ -41,12 +41,12 @@ class UserTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'    => $user->email,
 			'password' => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/user', [
+		$response = $this->postJson(route('user.update'), [
 			'username'         => 'new-username',
 			'picture'          => UploadedFile::fake()->image('picture.jpg'),
 			'password'         => 'new-password',

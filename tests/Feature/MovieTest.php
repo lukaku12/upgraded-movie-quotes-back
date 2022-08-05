@@ -17,12 +17,12 @@ class MovieTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->getJson('/api/movies');
+		$response = $this->getJson(route('movies.get'));
 
 		$response->assertStatus(200);
 	}
@@ -32,14 +32,14 @@ class MovieTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
 		Movie::factory()->create();
 
-		$response = $this->getJson('/api/movies/invalid-movie-slug');
+		$response = $this->getJson(route('movies.show', 'invalid-slug'));
 
 		$response->assertStatus(404);
 	}
@@ -51,7 +51,7 @@ class MovieTest extends TestCase
 
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
@@ -59,7 +59,7 @@ class MovieTest extends TestCase
 		$movie = Movie::factory()->create();
 		Quote::factory()->create(['movie_id' => $movie->id]);
 
-		$response = $this->getJson("/api/movies/$movie->slug");
+		$response = $this->getJson(route('movies.show', $movie->slug));
 
 		$response->assertStatus(403);
 	}
@@ -71,7 +71,7 @@ class MovieTest extends TestCase
 
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
@@ -79,7 +79,7 @@ class MovieTest extends TestCase
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 		Quote::factory()->create(['movie_id' => $movie->id]);
 
-		$response = $this->getJson("/api/movies/$movie->slug");
+		$response = $this->getJson(route('movies.show', $movie->slug));
 
 		$response->assertStatus(200);
 	}

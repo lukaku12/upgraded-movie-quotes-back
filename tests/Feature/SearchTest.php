@@ -18,12 +18,12 @@ class SearchTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/search', [
+		$response = $this->postJson(route('search'), [
 			'type'  => '',
 			'value' => '',
 		]);
@@ -42,12 +42,12 @@ class SearchTest extends TestCase
 			'body'     => 'test',
 		]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/search', [
+		$response = $this->postJson(route('search'), [
 			'type'  => 'quote',
 			'value' => 'test',
 		]);
@@ -62,12 +62,12 @@ class SearchTest extends TestCase
 		$movie = Movie::factory()->create(['title' => 'test']);
 		Quote::factory(4)->create(['title' => 'test', 'movie_id' => $movie->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/search', [
+		$response = $this->postJson(route('search'), [
 			'type'  => 'movie',
 			'value' => 'test',
 		]);
@@ -81,12 +81,12 @@ class SearchTest extends TestCase
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 		Movie::factory(4)->create(['title' => 'test']);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/search', [
+		$response = $this->postJson(route('search'), [
 			'type'  => 'movie',
 			'value' => 'test',
 		]);

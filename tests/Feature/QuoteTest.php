@@ -21,12 +21,12 @@ class QuoteTest extends TestCase
 		$quote = Quote::factory()->count(3)->create();
 		Comment::create(['user_id' => $user->id, 'quote_id' => $quote[0]->id, 'body' => 'test comment']);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->getJson('/api/quotes');
+		$response = $this->getJson(route('quotes.get'));
 
 		$response->assertStatus(200);
 	}
@@ -36,12 +36,12 @@ class QuoteTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/quotes/create', [
+		$response = $this->postJson(route('quotes.store'), [
 			'title_en'     => '',
 			'title_ka'     => '',
 			'movie_id'     => '',
@@ -59,12 +59,12 @@ class QuoteTest extends TestCase
 		$quote = Quote::factory()->create(['movie_id' => $movie->id]);
 		Comment::create(['user_id' => $user->id, 'quote_id' => $quote->id, 'body' => 'test comment']);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/quotes/create', [
+		$response = $this->postJson(route('quotes.store'), [
 			'title_en'     => 'new title',
 			'title_ka'     => 'ახალი სათაური',
 			'movie_id'     => $movie->id,
@@ -80,12 +80,12 @@ class QuoteTest extends TestCase
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->getJson("/api/movies/$movie->slug/quote/199");
+		$response = $this->getJson(route('quotes.show', [$movie->slug, '199']));
 
 		$response->assertStatus(404);
 	}
@@ -98,12 +98,12 @@ class QuoteTest extends TestCase
 		$quote = Quote::factory()->create(['user_id' => $other_user->id]);
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->getJson("/api/movies/$movie->slug/quote/$quote->id");
+		$response = $this->getJson(route('quotes.show', [$movie->slug, $quote->id]));
 
 		$response->assertStatus(403);
 	}
@@ -116,12 +116,12 @@ class QuoteTest extends TestCase
 		Comment::create(['user_id' => $user->id, 'quote_id' => $quote->id, 'body' => 'test comment']);
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->getJson("/api/movies/$movie->slug/quote/$quote->id");
+		$response = $this->getJson(route('quotes.show', [$movie->slug, $quote->id]));
 
 		$response->assertStatus(200);
 	}
@@ -132,12 +132,12 @@ class QuoteTest extends TestCase
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/quote/1232/remove");
+		$response = $this->postJson(route('quotes.destroy', [$movie->slug, '199']));
 
 		$response->assertStatus(404);
 	}
@@ -150,12 +150,12 @@ class QuoteTest extends TestCase
 		$quote = Quote::factory()->create(['user_id' => $other_user->id]);
 		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/quote/$quote->id/remove");
+		$response = $this->deleteJson(route('quotes.destroy', [$movie->slug, $quote->id]));
 
 		$response->assertStatus(403);
 	}
@@ -167,12 +167,12 @@ class QuoteTest extends TestCase
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 		$quote = Quote::factory()->create(['user_id' => $user->id, 'movie_id' => $movie->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/quote/$quote->id/remove");
+		$response = $this->deleteJson(route('quotes.destroy', [$movie->slug, $quote->id]));
 
 		$response->assertStatus(200);
 	}
@@ -184,12 +184,12 @@ class QuoteTest extends TestCase
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 		$quote = Quote::factory()->create(['user_id' => $user->id, 'movie_id' => $movie->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/quote/$quote->id", [
+		$response = $this->postJson(route('quotes.update', [$movie->slug, $quote->id]), [
 			'title_en'      => '',
 			'title_ka'      => '',
 			'movie_id'      => '',
@@ -206,12 +206,12 @@ class QuoteTest extends TestCase
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 		$quote = Quote::factory()->create(['user_id' => $user->id, 'movie_id' => $movie->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/quote/32", [
+		$response = $this->postJson(route('quotes.update', [$movie->slug, '32']), [
 			'title_en'      => 'asdasdasd',
 			'title_ka'      => 'ასდასდასდ',
 			'movie_id'      => $quote->movie_id,
@@ -229,12 +229,12 @@ class QuoteTest extends TestCase
 		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
 		$quote = Quote::factory()->create(['user_id' => $other_user->id, 'movie_id' => $movie->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/quote/$quote->id", [
+		$response = $this->postJson(route('quotes.update', [$movie->slug, $quote->id]), [
 			'title_en'      => 'asdasdasd',
 			'title_ka'      => 'ასდასდასდ',
 			'movie_id'      => $quote->movie_id,
@@ -251,12 +251,12 @@ class QuoteTest extends TestCase
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 		$quote = Quote::factory()->create(['user_id' => $user->id, 'movie_id' => $movie->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson("/api/movies/$movie->slug/quote/$quote->id", [
+		$response = $this->postJson(route('quotes.update', [$movie->slug, $quote->id]), [
 			'title_en'      => 'asdasdasd',
 			'title_ka'      => 'ასდასდასდ',
 			'movie_id'      => $quote->movie_id,

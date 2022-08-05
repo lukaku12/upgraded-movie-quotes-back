@@ -23,12 +23,12 @@ class GenreTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->getJson('/api/genres');
+		$response = $this->getJson(route('genres.get'));
 
 		$response->assertStatus(200);
 	}

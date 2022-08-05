@@ -21,12 +21,12 @@ class CommentTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		]);
 
-		$response = $this->postJson('/api/comment/add', [
+		$response = $this->postJson(route('comment.store'), [
 			'quote_id'     => '',
 			'comment_body' => '',
 		]);
@@ -38,14 +38,14 @@ class CommentTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		]);
 
 		$quote = Quote::factory()->create();
 
-		$response = $this->postJson('/api/comment/add', [
+		$response = $this->postJson(route('comment.store'), [
 			'quote_id'     => $quote->id,
 			'comment_body' => 'This is a comment',
 		]);

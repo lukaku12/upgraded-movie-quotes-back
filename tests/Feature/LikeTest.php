@@ -17,12 +17,12 @@ class LikeTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/like/add', [
+		$response = $this->postJson(route('like.store'), [
 			'quote_id' => '',
 		]);
 
@@ -36,7 +36,7 @@ class LikeTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
@@ -44,7 +44,7 @@ class LikeTest extends TestCase
 		$quote = Quote::factory()->create();
 		$like = Like::create(['user_id' => $user->id, 'quote_id' => $quote->id]);
 
-		$response = $this->postJson('/api/like/add', [
+		$response = $this->postJson(route('like.store'), [
 			'quote_id' => $quote->id,
 		]);
 
@@ -56,14 +56,14 @@ class LikeTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
 		$quote = Quote::factory()->create();
 
-		$response = $this->postJson('/api/like/add', [
+		$response = $this->postJson(route('like.store'), [
 			'quote_id' => $quote->id,
 		]);
 
@@ -76,14 +76,14 @@ class LikeTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
 		$quote = Quote::factory()->create();
 
-		$response = $this->postJson('/api/like/remove', [
+		$response = $this->postJson(route('like.destroy'), [
 			'quote_id' => $quote->id,
 		]);
 

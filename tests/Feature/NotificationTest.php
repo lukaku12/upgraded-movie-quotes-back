@@ -18,12 +18,12 @@ class NotificationTest extends TestCase
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$quote = Quote::factory()->create(['user_id' => $user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/notify-user', [
+		$response = $this->postJson(route('notifications.store'), [
 			'user_id'  => $user->id,
 			'quote_id' => $quote->id,
 			'message'  => 'Post Body',
@@ -40,12 +40,12 @@ class NotificationTest extends TestCase
 		$other_user = User::factory()->create(['password' => bcrypt('password')]);
 		$quote = Quote::factory()->create(['user_id' => $user->id]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/notify-user', [
+		$response = $this->postJson(route('notifications.store'), [
 			'user_id'  => $other_user->id,
 			'quote_id' => $quote->id,
 			'message'  => 'Reacted to your quote',
@@ -67,12 +67,12 @@ class NotificationTest extends TestCase
 			'read_at'  => null,
 		]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/notifications/read-all');
+		$response = $this->postJson(route('notifications.update'));
 
 		$response->assertStatus(200);
 	}
@@ -89,12 +89,12 @@ class NotificationTest extends TestCase
 			'read_at'  => null,
 		]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->getJson('/api/notifications');
+		$response = $this->getJson(route('notifications.get'));
 
 		$response->assertStatus(200);
 	}

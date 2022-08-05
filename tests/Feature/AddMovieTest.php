@@ -17,12 +17,12 @@ class AddMovieTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/movies/add', [
+		$response = $this->postJson(route('movies.store'), [
 			'title_en'       => '',
 			'title_ka'       => '',
 			'director_en'    => '',
@@ -47,12 +47,12 @@ class AddMovieTest extends TestCase
 		$genre1 = Genre::create(['name' => 'Genre 1']);
 		$genre2 = Genre::create(['name' => 'Genre 2']);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		])->assertStatus(200);
 
-		$response = $this->postJson('/api/movies/add', [
+		$response = $this->postJson(route('movies.store'), [
 			'title_en'       => 'movie title',
 			'title_ka'       => 'ფილმის სახელი',
 			'director_en'    => 'director',

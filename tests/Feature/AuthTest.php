@@ -15,7 +15,7 @@ class AuthTest extends TestCase
 	{
 		User::factory()->create(['password' => bcrypt('password')]);
 
-		$response = $this->postJson('/api/login', [
+		$response = $this->postJson(route('login'), [
 			'email'      => '',
 			'password'   => '',
 		]);
@@ -30,7 +30,7 @@ class AuthTest extends TestCase
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
-		$response = $this->postJson('/api/login', [
+		$response = $this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'not-valid-password',
 		]);
@@ -42,7 +42,7 @@ class AuthTest extends TestCase
 	{
 		$user = User::factory()->create(['email_verified_at' => null, 'password' => bcrypt('password')]);
 
-		$response = $this->postJson('/api/login', [
+		$response = $this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		]);
@@ -54,7 +54,7 @@ class AuthTest extends TestCase
 	{
 		$user = User::factory()->create(['email_verified_at' => now(), 'password' => bcrypt('password')]);
 
-		$response = $this->postJson('/api/login', [
+		$response = $this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		]);
@@ -74,7 +74,7 @@ class AuthTest extends TestCase
 
 		$user = User::factory()->create(['email_verified_at' => now(), 'password' => bcrypt('password')]);
 
-		$this->postJson('/api/login', [
+		$this->postJson(route('login'), [
 			'email'      => $user->email,
 			'password'   => 'password',
 		]);
