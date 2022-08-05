@@ -83,7 +83,7 @@ class LikeTest extends TestCase
 
 		$quote = Quote::factory()->create();
 
-		$response = $this->postJson(route('like.destroy'), [
+		$response = $this->deleteJson(route('like.destroy'), [
 			'quote_id' => $quote->id,
 		]);
 
