@@ -13,52 +13,52 @@ class SearchController extends Controller
 	{
 		if ($request->type === 'quote')
 		{
-			$quotes_collection = Quote::filter(request(['value']))->get();
-			foreach ($quotes_collection as $quote)
+			$quotesCollection = Quote::filter(request(['value']))->get();
+			foreach ($quotesCollection as $quote)
 			{
 				$quote = $this->getMovie_quote($quote);
 				$quote['user'] = $quote->user()->get(['username', 'picture'])->first();
 			}
-			return response()->json($quotes_collection, 200);
+			return response()->json($quotesCollection, 200);
 		}
 		if ($request->type === 'movie')
 		{
-			$movie_quotes_collections = Movie::filter(request(['value']))->with('quotes')->get()->pluck('quotes');
+			$movieQuotesCollections = Movie::filter(request(['value']))->with('quotes')->get()->pluck('quotes');
 
-			$movie_quotes = [];
-			foreach ($movie_quotes_collections as $movie_quotes_collection)
+			$movieQuotes = [];
+			foreach ($movieQuotesCollections as $movieQuotesCollection)
 			{
-				if (!$movie_quotes_collection->isEmpty())
+				if (!$movieQuotesCollection->isEmpty())
 				{
-					$movie_quotes[] = $movie_quotes_collection[0];
-					foreach ($movie_quotes as $movie_quote)
+					$movieQuotes[] = $movieQuotesCollection[0];
+					foreach ($movieQuotes as $movieQuote)
 					{
-						$movie_quote = $this->getMovie_quote($movie_quote);
-						$movie_quote['user'] = $movie_quote->user()->get()->pluck(['username', 'picture']);
+						$movieQuote = $this->getMovie_quote($movieQuote);
+						$movieQuote['user'] = $movieQuote->user()->get()->pluck(['username', 'picture']);
 					}
 				}
 			}
 
-			return response()->json($movie_quotes, 200);
+			return response()->json($movieQuotes, 200);
 		}
 		return response()->json('Invalid search type', 400);
 	}
 
 	/**
-	 * @param mixed $movie_quote
+	 * @param mixed $movieQuote
 	 *
 	 * @return mixed
 	 */
-	public function getMovie_quote(mixed $movie_quote): mixed
+	public function getMovie_quote(mixed $movieQuote): mixed
 	{
-		$movie_quote['likes'] = $movie_quote->likes;
-		$movie_quote['comments'] = $movie_quote->comments;
-		foreach ($movie_quote['comments'] as $comment)
+		$movieQuote['likes'] = $movieQuote->likes;
+		$movieQuote['comments'] = $movieQuote->comments;
+		foreach ($movieQuote['comments'] as $comment)
 		{
 			$comment['username'] = $comment->user()->get()->pluck(['username'])[0];
 			$comment['picture'] = $comment->user()->get()->pluck(['picture'])[0];
 		}
-		$movie_quote['movie'] = $movie_quote->movie;
-		return $movie_quote;
+		$movieQuote['movie'] = $movieQuote->movie;
+		return $movieQuote;
 	}
 }

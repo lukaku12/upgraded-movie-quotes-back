@@ -34,7 +34,7 @@ class AuthController extends Controller
 		{
 			return response()->json('User Does not exist!', 401);
 		}
-		if (!auth()->user()->hasVerifiedEmail())
+		elseif (!auth()->user()->hasVerifiedEmail())
 		{
 			auth()->user()->sendEmailVerificationNotification();
 			return response()->json('Please verify your email first!', 401);

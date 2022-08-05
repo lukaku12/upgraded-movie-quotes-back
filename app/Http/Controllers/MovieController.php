@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddMovieRequest;
 use App\Http\Requests\UpdateMovieRequest;
 use App\Models\Movie;
-use App\Models\MovieGenre;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
@@ -21,19 +20,13 @@ class MovieController extends Controller
 
 	public function show(Movie $movie): JsonResponse|Response
 	{
-		$movie->with(['quotes', 'genres'])->get()->first();
-
 		if (!Gate::allows('view-movie', $movie))
 		{
 			abort(403);
 		}
 
-		// get likes for each quote
-		foreach ($movie->quotes as $quote)
-		{
-			$quote->likes = $quote->likes()->get();
-			$quote->comments = $quote->comments()->get();
-		}
+		$movie->with(['quotes', 'genres'])->get()->first();
+		$movie['quotes'] = $movie->quotes()->with(['likes', 'comments'])->get();
 
 		return response()->json($movie, 200);
 	}
@@ -113,13 +106,7 @@ class MovieController extends Controller
 
 		$genres = json_decode($request->genres);
 
-		foreach ($genres as $genre)
-		{
-			MovieGenre::create([
-				'movie_id' => $movie->id,
-				'genre_id' => $genre,
-			]);
-		}
+		$movie->genres()->attach($genres);
 
 		$movie->update($data);
 		return response()->json($data, 200);

@@ -12,10 +12,10 @@ class NotificationController extends Controller
 {
 	public function index(NotificationRequest $request): JsonResponse
 	{
-		$quote_user_id = Quote::where('id', $request['quote_id'])->with('user')->pluck('user_id')->first();
+		$quoteUserId = Quote::where('id', $request['quote_id'])->with('user')->pluck('user_id')->first();
 
 		// don't save notification if user is the same as the quote user
-		if ($request['user_id'] == $quote_user_id)
+		if ($request['user_id'] == $quoteUserId)
 		{
 			return response()->json('You cannot notify yourself', 200);
 		}
@@ -59,8 +59,8 @@ class NotificationController extends Controller
 	 */
 	public function getNotifications(): mixed
 	{
-		$user_notifications = Quote::where('user_id', auth()->user()->id)->with(['notifications'])->get();
-		$user_notifications = $user_notifications->map(function ($item) {
+		$userNotifications = Quote::where('user_id', auth()->user()->id)->with(['notifications'])->get();
+		$userNotifications = $userNotifications->map(function ($item) {
 			$item['notifications'] = $item->notifications->map(function ($item) {
 				$item['username'] = $item->user->username;
 				$item['user_id'] = $item->user->id;
@@ -69,7 +69,7 @@ class NotificationController extends Controller
 			});
 			return $item;
 		});
-		return $user_notifications->map(function ($item) {
+		return $userNotifications->map(function ($item) {
 			return $item->notifications;
 		})->flatten();
 	}
