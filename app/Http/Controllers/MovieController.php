@@ -27,6 +27,7 @@ class MovieController extends Controller
 
 		$movie->with(['quotes', 'genres'])->get()->first();
 		$movie['quotes'] = $movie->quotes()->with(['likes', 'comments'])->get();
+		$movie->load('genres');
 
 		return response()->json($movie, 200);
 	}
