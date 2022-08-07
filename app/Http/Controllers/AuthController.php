@@ -14,7 +14,11 @@ class AuthController extends Controller
 	 */
 	public function register(RegisterRequest $request): JsonResponse
 	{
-		$user = User::create($request->validated());
+		$user = User::create([
+			'username' => $request->username,
+			'email'    => $request->email,
+			'password' => bcrypt($request->password),
+		]);
 
 		auth()->attempt($request->validated());
 
@@ -28,7 +32,7 @@ class AuthController extends Controller
 	 */
 	public function login(AuthRequest $request): JsonResponse
 	{
-		$token = auth()->attempt($request->all());
+		$token = auth()->attempt($request->validated());
 
 		if (!$token)
 		{

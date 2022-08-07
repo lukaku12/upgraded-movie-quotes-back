@@ -55,7 +55,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 	Route::controller(QuoteController::class)->group(function () {
 		Route::get('/quotes', 'index')->name('quotes.get');
-		Route::post('/quotes/create', 'store')->name('quotes.store');
+		Route::post('/quotes', 'store')->name('quotes.store');
 		Route::get('/movies/{movie:slug}/quote/{quote:id}', 'show')->name('quotes.show');
 		Route::post('/movies/{movie:slug}/quote/{quote:id}', 'update')->name('quotes.update');
 		Route::delete('/movies/{movie:slug}/quote/{quote:id}', 'destroy')->name('quotes.destroy');
