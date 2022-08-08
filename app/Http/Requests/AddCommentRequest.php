@@ -26,6 +26,14 @@ class AddCommentRequest extends FormRequest
 		return [
 			'quote_id'         => 'required',
 			'comment_body'     => 'required|max:300',
+			'user_id'          => '',
 		];
+	}
+
+	public function prepareForValidation()
+	{
+		$this->merge([
+			'user_id' => auth()->id(),
+		]);
 	}
 }
