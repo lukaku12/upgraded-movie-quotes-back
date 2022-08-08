@@ -136,5 +136,5 @@ it will watch JS files and on change it'll rebuild them, so you don't have to ma
 
 you can see database structure here
 
-[<img src="readme/assets/coronadrawsql.png"  style="position: relative; top: 4px" />](https://drawsql.app/laravel-10/diagrams/coronatime)
+[<img src="readme/assets/draw-sql.png"  style="position: relative; top: 4px" />](https://drawsql.app/teams/laravel-10/diagrams/chad-movie-quotes)
 
