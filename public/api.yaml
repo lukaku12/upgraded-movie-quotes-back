@@ -7,7 +7,7 @@ info:
 servers:
   - url: http://localhost:8000/api
     description: local server
-  - url: https://producation.app/api
+  - url: https://api-chad-movies.luka-kurdadze.redberryinternship.ge/api
     description: production server
 
 paths:
