@@ -32,7 +32,7 @@ class NotificationController extends Controller
 		return response()->json('Notification Sent successfully', 200);
 	}
 
-	public function updateNotifications(): JsonResponse
+	public function update(): JsonResponse
 	{
 		$notifications = $this->getNotifications();
 
@@ -47,7 +47,7 @@ class NotificationController extends Controller
 		return response()->json($notifications, 200);
 	}
 
-	public function getUserNotifications(): JsonResponse
+	public function get(): JsonResponse
 	{
 		$notifications = $this->getNotifications();
 
