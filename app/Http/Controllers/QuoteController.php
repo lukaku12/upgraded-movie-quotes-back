@@ -43,7 +43,7 @@ class QuoteController extends Controller
 		return response()->json('Quote Added successfully!', 200);
 	}
 
-	public function show($slug, Quote $quote): JsonResponse
+	public function show(Quote $quote): JsonResponse
 	{
 		if (!Gate::allows('view-quotes', $quote))
 		{
@@ -61,7 +61,7 @@ class QuoteController extends Controller
 		return response()->json($quote, 200);
 	}
 
-	public function update($slug, Quote $quote, UpdateQuoteRequest $request): JsonResponse
+	public function update(Quote $quote, UpdateQuoteRequest $request): JsonResponse
 	{
 		if (!Gate::allows('view-quotes', $quote))
 		{
@@ -86,7 +86,7 @@ class QuoteController extends Controller
 		return response()->json('Quote updated successfully!', 200);
 	}
 
-	public function destroy($slug, Quote $quote): JsonResponse
+	public function destroy(Quote $quote): JsonResponse
 	{
 		if (!Gate::allows('view-quotes', $quote))
 		{
