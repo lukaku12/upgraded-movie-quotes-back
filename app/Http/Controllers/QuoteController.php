@@ -53,7 +53,7 @@ class QuoteController extends Controller
 
 		foreach ($quote->comments as $comment)
 		{
-			$commentAuthor = User::where('id', $comment->user_id)->get(['username', 'picture']);
+			$commentAuthor = User::find($comment->user_id)->get(['username', 'picture']);
 			$comment['username'] = $commentAuthor[0]->username;
 			$comment['picture'] = $commentAuthor[0]->picture;
 		}
