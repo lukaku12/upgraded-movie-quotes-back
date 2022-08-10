@@ -34,11 +34,10 @@ class PasswordResetController extends Controller
 	public function submitResetPasswordForm(SubmitPasswordResetRequest $request): JsonResponse
 	{
 		$updatePassword = DB::table('password_resets')
-			->where([
+			->firstWhere([
 				'email' => $request->email,
 				'token' => $request->token,
-			])
-			->first();
+			]);
 
 		if (!$updatePassword)
 		{

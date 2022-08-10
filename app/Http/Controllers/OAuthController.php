@@ -20,7 +20,7 @@ class OAuthController extends Controller
 
 		$googlePassword = Hash::make($googleUser->id);
 
-		$user = User::where('email', $googleUser->email)->first();
+		$user = User::firstWhere('email', $googleUser->email);
 
 		if (!$user || ($user->google_id))
 		{
