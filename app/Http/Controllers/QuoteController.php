@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Gate;
 
 class QuoteController extends Controller
 {
-	public function index(): Response|JsonResponse
+	public function index(): JsonResponse
 	{
 		$quotes =
 			Quote::with(['movie', 'user', 'comments.user', 'likes'])
@@ -43,7 +43,7 @@ class QuoteController extends Controller
 		return response()->json('Quote Added successfully!', 200);
 	}
 
-	public function show($slug, Quote $quote): Response|JsonResponse
+	public function show($slug, Quote $quote): JsonResponse
 	{
 		if (!Gate::allows('view-quotes', $quote))
 		{
@@ -86,7 +86,7 @@ class QuoteController extends Controller
 		return response()->json('Quote updated successfully!', 200);
 	}
 
-	public function destroy($slug, Quote $quote): Response|JsonResponse
+	public function destroy($slug, Quote $quote): JsonResponse
 	{
 		if (!Gate::allows('view-quotes', $quote))
 		{

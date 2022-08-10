@@ -64,7 +64,7 @@ class MovieController extends Controller
 		return response()->json($movie, 200);
 	}
 
-	public function update(UpdateMovieRequest $request, Movie $movie): Response|JsonResponse
+	public function update(UpdateMovieRequest $request, Movie $movie): JsonResponse
 	{
 		if (!Gate::allows('view-movie', $movie))
 		{
@@ -104,7 +104,7 @@ class MovieController extends Controller
 		return response()->json($data, 200);
 	}
 
-	public function destroy(Movie $movie): Response|JsonResponse
+	public function destroy(Movie $movie): JsonResponse
 	{
 		if (!Gate::allows('view-movie', $movie))
 		{

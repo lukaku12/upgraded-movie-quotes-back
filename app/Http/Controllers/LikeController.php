@@ -6,6 +6,7 @@ use App\Events\AddLike;
 use App\Events\RemoveLike;
 use App\Http\Requests\LikeRequest;
 use App\Models\Like;
+use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
 
 class LikeController extends Controller
@@ -26,11 +27,11 @@ class LikeController extends Controller
 		return response()->json('Quote liked successfully!', 200);
 	}
 
-	public function destroy(LikeRequest $request): JsonResponse
+	public function destroy(Quote $quote): JsonResponse
 	{
-		broadcast((new RemoveLike(['quote_id' => $request['quote_id'], 'user_id' => auth()->id()]))->dontBroadcastToCurrentUser());
+		broadcast((new RemoveLike(['quote_id' => $quote->id, 'user_id' => auth()->id()]))->dontBroadcastToCurrentUser());
 
-		$like = Like::where('quote_id', $request['quote_id'])->where('user_id', auth()->user()->id);
+		$like = Like::where('quote_id', $quote->id)->where('user_id', auth()->user()->id);
 
 		$like->delete();
 
