@@ -13,16 +13,18 @@ class SearchTest extends TestCase
 {
 	use RefreshDatabase;
 
+	protected function setUp(): void
+	{
+		parent::setUp();
+
+		$user = User::factory()->create(['password' => bcrypt('password')]);
+
+		$this->actingAs($user);
+	}
+
 	/* @test */
 	public function test_user_cant_search_items_if_request_type_is_not_defined()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
-
 		$response = $this->postJson(route('search'), [
 			'type'  => '',
 			'value' => '',
@@ -34,18 +36,12 @@ class SearchTest extends TestCase
 	/* @test */
 	public function test_user_can_search_items_if_request_type_is_quote()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$quote = Quote::factory(4)->create(['title' => 'test']);
 		Comment::create([
 			'quote_id' => $quote[0]->id,
-			'user_id'  => $user->id,
+			'user_id'  => auth()->id(),
 			'body'     => 'test',
 		]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
 
 		$response = $this->postJson(route('search'), [
 			'type'  => 'quote',
@@ -58,14 +54,8 @@ class SearchTest extends TestCase
 	/* @test */
 	public function test_user_cant_search_items_if_request_type_is_movie_and_movie_has_quotes()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$movie = Movie::factory()->create(['title' => 'test']);
 		Quote::factory(4)->create(['title' => 'test', 'movie_id' => $movie->id]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
 
 		$response = $this->postJson(route('search'), [
 			'type'  => 'movie',
@@ -78,13 +68,7 @@ class SearchTest extends TestCase
 	/* @test */
 	public function test_user_can_search_items_if_request_type_is_movie()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
 		Movie::factory(4)->create(['title' => 'test']);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
 
 		$response = $this->postJson(route('search'), [
 			'type'  => 'movie',

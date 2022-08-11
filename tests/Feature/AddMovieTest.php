@@ -12,16 +12,18 @@ class AddMovieTest extends TestCase
 {
 	use RefreshDatabase;
 
+	protected function setUp(): void
+	{
+		parent::setUp();
+
+		$user = User::factory()->create(['password' => bcrypt('password')]);
+
+		$this->actingAs($user);
+	}
+
 	/* @test */
 	public function test_user_cant_add_movie_if_request_data_is_not_valid()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
-
 		$response = $this->postJson(route('movies.store'), [
 			'title_en'       => '',
 			'title_ka'       => '',
@@ -43,14 +45,8 @@ class AddMovieTest extends TestCase
 	{
 		$this->withoutExceptionHandling();
 
-		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$genre1 = Genre::create(['name' => 'Genre 1']);
 		$genre2 = Genre::create(['name' => 'Genre 2']);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
 
 		$response = $this->postJson(route('movies.store'), [
 			'title_en'       => 'movie title',

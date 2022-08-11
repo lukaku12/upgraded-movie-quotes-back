@@ -14,6 +14,15 @@ class GenreTest extends TestCase
 {
 	use RefreshDatabase;
 
+	protected function setUp(): void
+	{
+		parent::setUp();
+
+		$user = User::factory()->create(['password' => bcrypt('password')]);
+
+		$this->actingAs($user);
+	}
+
 	/**
 	 * A basic feature test example.
 	 *
@@ -21,13 +30,6 @@ class GenreTest extends TestCase
 	 */
 	public function test_user_can_get_all_genres()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
-
 		$response = $this->getJson(route('genres.get'));
 
 		$response->assertStatus(200);

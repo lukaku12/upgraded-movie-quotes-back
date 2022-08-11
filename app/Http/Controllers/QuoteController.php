@@ -7,7 +7,6 @@ use App\Http\Requests\UpdateQuoteRequest;
 use App\Models\Quote;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Gate;
 
 class QuoteController extends Controller
 {
@@ -44,10 +43,6 @@ class QuoteController extends Controller
 
 	public function show(Quote $quote): JsonResponse
 	{
-		if (!Gate::allows('view-quotes', $quote))
-		{
-			abort(403);
-		}
 		$quote->load(['comments', 'likes']);
 
 		foreach ($quote->comments as $comment)
@@ -62,10 +57,6 @@ class QuoteController extends Controller
 
 	public function update(Quote $quote, UpdateQuoteRequest $request): JsonResponse
 	{
-		if (!Gate::allows('view-quotes', $quote))
-		{
-			abort(403);
-		}
 		$data = [
 			'title'  => [
 				'en' => $request->title_en,
@@ -87,10 +78,6 @@ class QuoteController extends Controller
 
 	public function destroy(Quote $quote): JsonResponse
 	{
-		if (!Gate::allows('view-quotes', $quote))
-		{
-			abort(403);
-		}
 		$quote->delete();
 		return response()->json('Quote deleted successfully!', 200);
 	}

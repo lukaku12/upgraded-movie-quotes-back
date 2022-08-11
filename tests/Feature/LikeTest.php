@@ -12,16 +12,18 @@ class LikeTest extends TestCase
 {
 	use RefreshDatabase;
 
+	protected function setUp(): void
+	{
+		parent::setUp();
+
+		$user = User::factory()->create(['password' => bcrypt('password')]);
+
+		$this->actingAs($user);
+	}
+
 	/* @test */
 	public function test_user_cant_like_post_if_request_data_doesnt_contain_quote_id()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
-
 		$response = $this->postJson(route('like.store'), [
 			'quote_id' => '',
 		]);
@@ -34,15 +36,8 @@ class LikeTest extends TestCase
 	/* @test */
 	public function test_user_cant_like_post_if_user_already_has_post_liked()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
-
 		$quote = Quote::factory()->create();
-		$like = Like::create(['user_id' => $user->id, 'quote_id' => $quote->id]);
+		Like::create(['user_id' => auth()->id(), 'quote_id' => $quote->id]);
 
 		$response = $this->postJson(route('like.store'), [
 			'quote_id' => $quote->id,
@@ -54,13 +49,6 @@ class LikeTest extends TestCase
 	/* @test */
 	public function test_user_cant_like_post_if_request_data_is_valid()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
-
 		$quote = Quote::factory()->create();
 
 		$response = $this->postJson(route('like.store'), [
@@ -74,16 +62,9 @@ class LikeTest extends TestCase
 	/* @test */
 	public function test_user_can_unlike_post()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
-
 		$quote = Quote::factory()->create();
 
-		$response = $this->deleteJson(route('like.destroy'), [
+		$response = $this->deleteJson(route('like.destroy', '1'), [
 			'quote_id' => $quote->id,
 		]);
 

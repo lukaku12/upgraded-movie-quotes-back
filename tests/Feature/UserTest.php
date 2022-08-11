@@ -14,38 +14,33 @@ class UserTest extends TestCase
 {
 	use RefreshDatabase;
 
+	protected function setUp(): void
+	{
+		parent::setUp();
+
+		$user = User::factory()->create(['password' => bcrypt('password')]);
+
+		$this->actingAs($user);
+	}
+
 	/* @test */
 	public function test_users_can_get_their_account_info_if_authenticated()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'    => $user->email,
-			'password' => 'password',
-		])->assertStatus(200);
-
 		$response = $this->getJson(route('user.get'));
 
 		$response
 			->assertStatus(200)
 			->assertJson([
-				'id'       => $user->id,
-				'username' => $user->username,
-				'email'    => $user->email,
-				'picture'  => $user->picture,
+				'id'       => auth()->id(),
+				'username' => auth()->user()->username,
+				'email'    => auth()->user()->email,
+				'picture'  => auth()->user()->picture,
 			]);
 	}
 
 	/* @test */
 	public function test_users_can_update_their_account()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'    => $user->email,
-			'password' => 'password',
-		])->assertStatus(200);
-
 		$response = $this->postJson(route('user.update'), [
 			'username'         => 'new-username',
 			'picture'          => UploadedFile::fake()->image('picture.jpg'),
@@ -53,8 +48,7 @@ class UserTest extends TestCase
 			'confirm_password' => 'new-password',
 		]);
 
-		$response
-			->assertStatus(200);
+		$response->assertStatus(200);
 	}
 
 	/** @test */

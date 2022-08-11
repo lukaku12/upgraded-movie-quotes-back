@@ -12,6 +12,15 @@ class CommentTest extends TestCase
 {
 	use RefreshDatabase;
 
+	protected function setUp(): void
+	{
+		parent::setUp();
+
+		$user = User::factory()->create(['password' => bcrypt('password')]);
+
+		$this->actingAs($user);
+	}
+
 	/**
 	 * A basic feature test example.
 	 *
@@ -19,16 +28,9 @@ class CommentTest extends TestCase
 	 */
 	public function test_comment_cant_be_added_if_request_data_is_not_provided()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		]);
-
 		$response = $this->postJson(route('comment.store'), [
 			'quote_id'     => '',
-			'comment_body' => '',
+			'body'         => '',
 		]);
 
 		$response->assertStatus(422)->assertJson(['errors' => true]);
@@ -36,18 +38,11 @@ class CommentTest extends TestCase
 
 	public function test_comment_can_be_added_if_request_data_is_valid()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		]);
-
 		$quote = Quote::factory()->create();
 
 		$response = $this->postJson(route('comment.store'), [
 			'quote_id'     => $quote->id,
-			'comment_body' => 'This is a comment',
+			'body'         => 'This is a comment',
 		]);
 
 		$response->assertStatus(200);

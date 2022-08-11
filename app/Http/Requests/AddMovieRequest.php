@@ -32,6 +32,16 @@ class AddMovieRequest extends FormRequest
 			'description_ka' => 'required|string|max:255',
 			'thumbnail'      => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 			'genres'         => 'required',
+			'slug'           => '',
+			'user_id'        => '',
 		];
+	}
+
+	public function prepareForValidation()
+	{
+		$this->merge([
+			'slug'    => strtolower(str_replace('.', '', str_replace(' ', '-', $this->title_en))),
+			'user_id' => auth()->id(),
+		]);
 	}
 }

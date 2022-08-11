@@ -13,8 +13,6 @@ class AuthTest extends TestCase
 	/* @test */
 	public function test_user_cant_login_if_provided_credentials_are_empty()
 	{
-		User::factory()->create(['password' => bcrypt('password')]);
-
 		$response = $this->postJson(route('login'), [
 			'email'      => '',
 			'password'   => '',

@@ -20,11 +20,6 @@ class MovieController extends Controller
 
 	public function show(Movie $movie): JsonResponse|Response
 	{
-		if (!Gate::allows('view-movie', $movie))
-		{
-			abort(403);
-		}
-
 		$movie->with(['quotes', 'genres'])->get()->first();
 		$movie['quotes'] = $movie->quotes()->with(['likes', 'comments'])->get();
 		$movie->load('genres');
@@ -34,28 +29,10 @@ class MovieController extends Controller
 
 	public function store(AddMovieRequest $request): JsonResponse
 	{
-		$data = [
-			'user_id'   => auth()->id(),
-			'slug'      => strtolower(str_replace('.', '', str_replace(' ', '-', $request->title_en))),
-			'title'     => [
-				'en' => $request->title_en,
-				'ka' => $request->title_ka,
-			],
-			'director' => [
-				'en' => $request->director_en,
-				'ka' => $request->director_ka,
-			],
-			'description' => [
-				'en' => $request->description_en,
-				'ka' => $request->description_ka,
-			],
-		];
-
 		$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
 		$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
-		$data['thumbnail'] = $correctThumbnailPath;
 
-		$movie = Movie::create($data);
+		$movie = Movie::create($request->validated() + ['thumbnail' => $correctThumbnailPath]);
 
 		$genres = json_decode($request->genres);
 
@@ -66,50 +43,25 @@ class MovieController extends Controller
 
 	public function update(UpdateMovieRequest $request, Movie $movie): JsonResponse
 	{
-		if (!Gate::allows('view-movie', $movie))
-		{
-			abort(403);
-		}
-
 		$movie->genres()->detach();
 
-		$data = [
-			'user_id'   => auth()->id(),
-			'slug'      => strtolower(str_replace('.', '', str_replace(' ', '-', $request->title_en))),
-			'title'     => [
-				'en' => $request->title_en,
-				'ka' => $request->title_ka,
-			],
-			'director' => [
-				'en' => $request->director_en,
-				'ka' => $request->director_ka,
-			],
-			'description' => [
-				'en' => $request->description_en,
-				'ka' => $request->description_ka,
-			],
-		];
+		$correctThumbnailPath = '';
 		if ($request->thumbnail)
 		{
 			$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
 			$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
-			$data['thumbnail'] = $correctThumbnailPath;
 		}
 
 		$genres = json_decode($request->genres);
 
 		$movie->genres()->attach($genres);
 
-		$movie->update($data);
-		return response()->json($data, 200);
+		$movie->update($request->validated() + ['thumbnail' => $correctThumbnailPath]);
+		return response()->json($movie, 200);
 	}
 
 	public function destroy(Movie $movie): JsonResponse
 	{
-		if (!Gate::allows('view-movie', $movie))
-		{
-			abort(403);
-		}
 		$movie->delete();
 		return response()->json('Movie Deleted Successfully', 200);
 	}

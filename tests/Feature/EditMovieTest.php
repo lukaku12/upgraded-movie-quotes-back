@@ -14,16 +14,19 @@ class EditMovieTest extends TestCase
 {
 	use RefreshDatabase;
 
+	protected function setUp(): void
+	{
+		parent::setUp();
+
+		$user = User::factory()->create(['password' => bcrypt('password')]);
+
+		$this->actingAs($user);
+	}
+
 	/* @test */
 	public function test_user_cant_get_movie_data_if_movie_slug_is_not_valid()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
 		Genre::create(['name' => 'Genre 1']);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
 
 		$response = $this->getJson('/api/movies/incorrect-movie-slug/edit');
 
@@ -34,16 +37,11 @@ class EditMovieTest extends TestCase
 	public function test_user_cant_get_movie_data_if_movie_slug_is_valid_but_movie_doesnt_belongs_to_user()
 	{
 		$this->withExceptionHandling();
+		// TODO REGISTER WITH OTHER USER
 
-		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$other_user = User::factory()->create(['password' => bcrypt('password')]);
 
 		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
 
 		$response = $this->getJson(route('movies.show', $movie->slug));
 
@@ -55,14 +53,7 @@ class EditMovieTest extends TestCase
 	{
 		$this->withExceptionHandling();
 
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$movie = Movie::factory()->create(['user_id' => $user->id]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
+		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
 
 		$response = $this->getJson(route('movies.show', $movie->slug));
 
@@ -72,14 +63,7 @@ class EditMovieTest extends TestCase
 	/* @test */
 	public function test_user_cant_update_movie_data_if_request_data_is_not_valid()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$movie = Movie::factory()->create(['user_id' => $user->id]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
+		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
 
 		$response = $this->postJson(route('movies.update', $movie->slug), [
 			'title'       => '',
@@ -94,16 +78,9 @@ class EditMovieTest extends TestCase
 	/* @test */
 	public function test_user_cant_update_movie_if_movie_slug_is_not_valid()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		Movie::factory()->create(['user_id' => $user->id]);
+		Movie::factory()->create(['user_id' => auth()->id()]);
 		$genre1 = Genre::create(['name' => 'Genre 1']);
 		$genre2 = Genre::create(['name' => 'Genre 2']);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
 
 		$response = $this->postJson(route('movies.update', 'incorrect-slug'), [
 			'title_en'          => 'New title',
@@ -123,17 +100,11 @@ class EditMovieTest extends TestCase
 	{
 		$this->withExceptionHandling();
 
-		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$other_user = User::factory()->create(['password' => bcrypt('password')]);
 
 		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
 		$genre1 = Genre::create(['name' => 'Genre 1']);
 		$genre2 = Genre::create(['name' => 'Genre 2']);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
 
 		$response = $this->postJson(route('movies.update', $movie->slug), [
 			'title_en'          => 'New title',
@@ -151,17 +122,10 @@ class EditMovieTest extends TestCase
 	/* @test */
 	public function test_user_can_update_movie_if_movie_slug_and_request_data_and_user_is_valid()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$movie = Movie::factory()->create(['user_id' => $user->id]);
+		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
 		$genre1 = Genre::create(['name' => 'Genre 1']);
 		$genre2 = Genre::create(['name' => 'Genre 2']);
 		MovieGenre::create(['movie_id' => $movie->id, 'genre_id' => $genre1->id]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
 
 		$response = $this->postJson(route('movies.update', $movie->slug), [
 			'title_en'          => 'New title',
@@ -180,14 +144,7 @@ class EditMovieTest extends TestCase
 	/* @test */
 	public function test_user_cant_delete_movie_if_slug_is_not_valid()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		Movie::factory()->create(['user_id' => $user->id]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
+		Movie::factory()->create(['user_id' => auth()->id()]);
 
 		$response = $this->deleteJson(route('movies.destroy', 'incorrect-slug'));
 
@@ -199,15 +156,9 @@ class EditMovieTest extends TestCase
 	{
 		$this->withExceptionHandling();
 
-		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$other_user = User::factory()->create(['password' => bcrypt('password')]);
 
 		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
 
 		$response = $this->deleteJson(route('movies.destroy', $movie->slug));
 
@@ -217,14 +168,7 @@ class EditMovieTest extends TestCase
 	/* @test */
 	public function test_user_can_delete_movie_if_slug_is_valid_and_it_belongs_to_user()
 	{
-		$user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$movie = Movie::factory()->create(['user_id' => $user->id]);
-
-		$this->postJson(route('login'), [
-			'email'      => $user->email,
-			'password'   => 'password',
-		])->assertStatus(200);
+		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
 
 		$response = $this->deleteJson(route('movies.destroy', $movie->slug));
 
