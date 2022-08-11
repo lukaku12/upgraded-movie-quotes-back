@@ -12,10 +12,9 @@ class NotificationController extends Controller
 {
 	public function index(NotificationRequest $request): JsonResponse
 	{
-		$quoteUserId = Quote::find($request['quote_id'])->with('user')->pluck('user_id');
-
+		$quote = Quote::find($request['quote_id']);
 		// don't save notification if user is the same as the quote user
-		if ($request['user_id'] == $quoteUserId)
+		if ($request['user_id'] == $quote->user_id)
 		{
 			return response()->json('You cannot notify yourself', 200);
 		}

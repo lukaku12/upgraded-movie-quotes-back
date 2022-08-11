@@ -556,7 +556,7 @@ paths:
                         schema:
                             type: string
                             example: Quote created successfully
-  /movies/{slug}/quote/{quote}:
+  /quote/{quote}:
     get:
         parameters:
         - name: slug
