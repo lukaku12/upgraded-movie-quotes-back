@@ -37,7 +37,6 @@ class EditMovieTest extends TestCase
 	public function test_user_cant_get_movie_data_if_movie_slug_is_valid_but_movie_doesnt_belongs_to_user()
 	{
 		$this->withExceptionHandling();
-		// TODO REGISTER WITH OTHER USER
 
 		$other_user = User::factory()->create(['password' => bcrypt('password')]);
 

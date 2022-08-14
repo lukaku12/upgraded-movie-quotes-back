@@ -25,6 +25,14 @@ class LikeRequest extends FormRequest
 	{
 		return [
 			'quote_id' => 'required',
+			'user_id'  => 'required',
 		];
+	}
+
+	public function prepareForValidation()
+	{
+		$this->merge([
+			'user_id' => auth()->id(),
+		]);
 	}
 }

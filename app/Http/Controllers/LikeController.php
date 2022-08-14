@@ -19,10 +19,7 @@ class LikeController extends Controller
 		{
 			return response()->json('You have already liked this quote', 400);
 		}
-		Like::create([
-			'user_id'  => auth()->user()->id,
-			'quote_id' => $request['quote_id'],
-		]);
+		Like::create($request->validated());
 
 		return response()->json('Quote liked successfully!', 200);
 	}

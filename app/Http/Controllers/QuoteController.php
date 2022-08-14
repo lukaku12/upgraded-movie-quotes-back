@@ -25,9 +25,7 @@ class QuoteController extends Controller
 		$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
 		$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
 
-		Quote::create($request->validated() + [
-			'thumbnail' => $correctThumbnailPath,
-		]);
+		Quote::create([$request->validated(), 'thumbnail' => $correctThumbnailPath]);
 
 		return response()->json('Quote Added successfully!', 200);
 	}
@@ -56,9 +54,7 @@ class QuoteController extends Controller
 			$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
 		}
 
-		$quote->update($request->validated() + [
-			'thumbnail' => $correctThumbnailPath,
-		]);
+		$quote->update([$request->validated(), 'thumbnail' => $correctThumbnailPath]);
 
 		return response()->json('Quote updated successfully!', 200);
 	}

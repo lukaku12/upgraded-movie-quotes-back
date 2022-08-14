@@ -7,11 +7,10 @@ use App\Http\Requests\UpdateMovieRequest;
 use App\Models\Movie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Gate;
 
 class MovieController extends Controller
 {
-	public function index(): JsonResponse
+	public function index()
 	{
 		$movies = Movie::where('user_id', auth()->id())->with('quotes')->get();
 
@@ -32,7 +31,7 @@ class MovieController extends Controller
 		$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
 		$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
 
-		$movie = Movie::create($request->validated() + ['thumbnail' => $correctThumbnailPath]);
+		$movie = Movie::create([$request->validated(), 'thumbnail' => $correctThumbnailPath]);
 
 		$genres = json_decode($request->genres);
 
@@ -56,7 +55,7 @@ class MovieController extends Controller
 
 		$movie->genres()->attach($genres);
 
-		$movie->update($request->validated() + ['thumbnail' => $correctThumbnailPath]);
+		$movie->update([$request->validated(), 'thumbnail' => $correctThumbnailPath]);
 		return response()->json($movie, 200);
 	}
 
