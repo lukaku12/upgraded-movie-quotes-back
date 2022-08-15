@@ -25,7 +25,21 @@ class QuoteController extends Controller
 		$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
 		$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
 
-		Quote::create([$request->validated(), 'thumbnail' => $correctThumbnailPath]);
+		$data = [
+			'title'       => [
+				'en' => $request->title_en,
+				'ka' => $request->title_ka,
+			],
+			'description' => [
+				'en' => $request->description_en,
+				'ka' => $request->description_ka,
+			],
+			'thumbnail'   => $correctThumbnailPath,
+			'movie_id'    => $request->movie_id,
+			'user_id'     => $request->user_id,
+		];
+
+		Quote::create($data);
 
 		return response()->json('Quote Added successfully!', 200);
 	}
@@ -46,15 +60,27 @@ class QuoteController extends Controller
 
 	public function update(Quote $quote, UpdateQuoteRequest $request): JsonResponse
 	{
-		$correctThumbnailPath = '';
+		$data = [
+			'title'       => [
+				'en' => $request->title_en,
+				'ka' => $request->title_ka,
+			],
+			'description' => [
+				'en' => $request->description_en,
+				'ka' => $request->description_ka,
+			],
+			'movie_id'    => $request->movie_id,
+			'user_id'     => $request->user_id,
+		];
 
 		if ($request->thumbnail !== null)
 		{
 			$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
 			$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
+			$data['thumbnail'] = $correctThumbnailPath;
 		}
 
-		$quote->update([$request->validated(), 'thumbnail' => $correctThumbnailPath]);
+		$quote->update($data);
 
 		return response()->json('Quote updated successfully!', 200);
 	}

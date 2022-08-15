@@ -69,31 +69,19 @@ class QuoteTest extends TestCase
 	{
 		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
 
-		$response = $this->getJson(route('quotes.show', [$movie->slug, '199']));
+		$response = $this->getJson(route('quotes.show', ['199']));
 
 		$response->assertStatus(404);
 	}
 
 	/* @test */
-	public function test_quote_cant_be_returned_if_quote_id_is_valid_but_it_doesnt_belongs_to_user()
-	{
-		$other_user = User::factory()->create(['password' => bcrypt('password')]);
-		$quote = Quote::factory()->create(['user_id' => $other_user->id]);
-		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
-
-		$response = $this->getJson(route('quotes.show', [$movie->slug, $quote->id]));
-
-		$response->assertStatus(403);
-	}
-
-	/* @test */
 	public function test_quote_can_be_returned_if_quote_id_is_valid_and_it_belongs_to_user()
 	{
-		$quote = Quote::factory()->create(['user_id' => auth()->id()]);
-		Comment::create(['user_id' => auth()->id(), 'quote_id' => $quote->id, 'body' => 'test comment']);
 		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
+		$quote = Quote::factory()->create(['movie_id' => $movie->id]);
+		Comment::create(['user_id' => auth()->id(), 'quote_id' => $quote->id, 'body' => 'test comment']);
 
-		$response = $this->getJson(route('quotes.show', [$movie->slug, $quote->id]));
+		$response = $this->getJson(route('quotes.show', [$quote->id]));
 
 		$response->assertStatus(200);
 	}
@@ -104,21 +92,9 @@ class QuoteTest extends TestCase
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 
-		$response = $this->postJson(route('quotes.destroy', [$movie->slug, '199']));
+		$response = $this->postJson(route('quotes.destroy', ['199']));
 
 		$response->assertStatus(404);
-	}
-
-	/* @test */
-	public function test_user_cant_delete_quote_if_quote_exists_but_it_doesnt_belongs_to_user()
-	{
-		$other_user = User::factory()->create(['password' => bcrypt('password')]);
-		$quote = Quote::factory()->create(['user_id' => $other_user->id]);
-		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
-
-		$response = $this->deleteJson(route('quotes.destroy', [$movie->slug, $quote->id]));
-
-		$response->assertStatus(403);
 	}
 
 	/* @test */
@@ -127,7 +103,7 @@ class QuoteTest extends TestCase
 		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
 		$quote = Quote::factory()->create(['user_id' => auth()->id(), 'movie_id' => $movie->id]);
 
-		$response = $this->deleteJson(route('quotes.destroy', [$movie->slug, $quote->id]));
+		$response = $this->deleteJson(route('quotes.destroy', [$quote->id]));
 
 		$response->assertStatus(200);
 	}
@@ -138,7 +114,7 @@ class QuoteTest extends TestCase
 		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
 		$quote = Quote::factory()->create(['user_id' => auth()->id(), 'movie_id' => $movie->id]);
 
-		$response = $this->postJson(route('quotes.update', [$movie->slug, $quote->id]), [
+		$response = $this->postJson(route('quotes.update', [$quote->id]), [
 			'title_en'      => '',
 			'title_ka'      => '',
 			'movie_id'      => '',
@@ -154,7 +130,7 @@ class QuoteTest extends TestCase
 		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
 		$quote = Quote::factory()->create(['user_id' => auth()->id(), 'movie_id' => $movie->id]);
 
-		$response = $this->postJson(route('quotes.update', [$movie->slug, '32']), [
+		$response = $this->postJson(route('quotes.update', ['32']), [
 			'title_en'      => 'asdasdasd',
 			'title_ka'      => 'ასდასდასდ',
 			'movie_id'      => $quote->movie_id,
@@ -165,30 +141,13 @@ class QuoteTest extends TestCase
 	}
 
 	/* @test */
-	public function test_user_cant_update_quote_request_data_is_valid_and_quote_is_valid_but_it_doesnt_belongs_to_user()
-	{
-		$other_user = User::factory()->create(['password' => bcrypt('password')]);
-		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
-		$quote = Quote::factory()->create(['user_id' => $other_user->id, 'movie_id' => $movie->id]);
-
-		$response = $this->postJson(route('quotes.update', [$movie->slug, $quote->id]), [
-			'title_en'      => 'asdasdasd',
-			'title_ka'      => 'ასდასდასდ',
-			'movie_id'      => $quote->movie_id,
-			'thumbnail'     => UploadedFile::fake()->create('thumbnail.jpg'),
-		]);
-
-		$response->assertStatus(403);
-	}
-
-	/* @test */
 	public function test_user_can_update_quote_request_data_is_valid_and_quote_is_valid_and_it_belongs_to_user()
 	{
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 		$movie = Movie::factory()->create(['user_id' => $user->id]);
 		$quote = Quote::factory()->create(['user_id' => $user->id, 'movie_id' => $movie->id]);
 
-		$response = $this->postJson(route('quotes.update', [$movie->slug, $quote->id]), [
+		$response = $this->postJson(route('quotes.update', [$quote->id]), [
 			'title_en'      => 'asdasdasd',
 			'title_ka'      => 'ასდასდასდ',
 			'movie_id'      => $quote->movie_id,

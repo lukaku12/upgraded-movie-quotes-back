@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddMovieRequest;
 use App\Http\Requests\UpdateMovieRequest;
+use App\Http\Resources\MovieResource;
 use App\Models\Movie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -14,7 +15,7 @@ class MovieController extends Controller
 	{
 		$movies = Movie::where('user_id', auth()->id())->with('quotes')->get();
 
-		return response()->json($movies, 200);
+		return response()->json(new MovieResource($movies), 200);
 	}
 
 	public function show(Movie $movie): JsonResponse|Response
@@ -31,7 +32,25 @@ class MovieController extends Controller
 		$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
 		$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
 
-		$movie = Movie::create([$request->validated(), 'thumbnail' => $correctThumbnailPath]);
+		$data = [
+			'title'       => [
+				'en' => $request->title_en,
+				'ka' => $request->title_ka,
+			],
+			'director'    => [
+				'en' => $request->director_en,
+				'ka' => $request->director_ka,
+			],
+			'description' => [
+				'en' => $request->description_en,
+				'ka' => $request->description_ka,
+			],
+			'thumbnail'   => $correctThumbnailPath,
+			'slug'        => $request->slug,
+			'user_id'     => $request->user_id,
+		];
+
+		$movie = Movie::create($data);
 
 		$genres = json_decode($request->genres);
 
@@ -44,18 +63,35 @@ class MovieController extends Controller
 	{
 		$movie->genres()->detach();
 
-		$correctThumbnailPath = '';
+		$data = [
+			'title'       => [
+				'en' => $request->title_en,
+				'ka' => $request->title_ka,
+			],
+			'director'    => [
+				'en' => $request->director_en,
+				'ka' => $request->director_ka,
+			],
+			'description' => [
+				'en' => $request->description_en,
+				'ka' => $request->description_ka,
+			],
+			'slug'        => $request->slug,
+			'user_id'     => $request->user_id,
+		];
+
 		if ($request->thumbnail)
 		{
 			$thumbnailPath = $request->file('thumbnail')->store('thumbnails');
 			$correctThumbnailPath = str_replace('thumbnails/', '', $thumbnailPath);
+			$data['thumbnail'] = $correctThumbnailPath;
 		}
 
 		$genres = json_decode($request->genres);
 
 		$movie->genres()->attach($genres);
 
-		$movie->update([$request->validated(), 'thumbnail' => $correctThumbnailPath]);
+		$movie->update($data);
 		return response()->json($movie, 200);
 	}
 

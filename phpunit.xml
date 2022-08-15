@@ -20,6 +20,8 @@
             <directory>./app/Http/Middleware</directory>
             <directory>./app/Exceptions</directory>
             <directory>./app/Providers</directory>
+            <directory>./app/Http/Resources</directory>
+            <directory>./app/Policies</directory>
             <file>./app/Http/Controllers/Controller.php</file>
             <file>./app/Console/Kernel.php</file>
             <file>./app/Http/Kernel.php</file>

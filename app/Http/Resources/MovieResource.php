@@ -25,6 +25,7 @@ class MovieResource extends JsonResource
 					'title'       => $movie->getTranslations('title', ['en', 'ka']),
 					'description' => $movie->description,
 					'thumbnail'   => $movie->thumbnail,
+					'slug'        => $movie->slug,
 					'genres'      => $movie->genres->map(function ($genre) {
 						return ['name' => $genre->name];
 					}),

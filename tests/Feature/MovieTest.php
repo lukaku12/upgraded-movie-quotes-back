@@ -40,19 +40,6 @@ class MovieTest extends TestCase
 	}
 
 	/* @test */
-	public function test_return_movie_if_movie_slug_is_valid_and_movie_doesnt_belongs_to_user()
-	{
-		$this->withExceptionHandling();
-
-		$movie = Movie::factory()->create();
-		Quote::factory()->create(['movie_id' => $movie->id]);
-
-		$response = $this->getJson(route('movies.show', $movie->slug));
-
-		$response->assertStatus(403);
-	}
-
-	/* @test */
 	public function test_return_movie_if_movie_slug_is_valid_and_movie_belongs_to_user()
 	{
 		$this->withoutExceptionHandling();

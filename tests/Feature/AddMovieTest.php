@@ -18,6 +18,11 @@ class AddMovieTest extends TestCase
 
 		$user = User::factory()->create(['password' => bcrypt('password')]);
 
+		$this->postJson(route('login'), [
+			'email'    => $user->email,
+			'password' => 'password',
+		])->assertStatus(200);
+
 		$this->actingAs($user);
 	}
 

@@ -34,20 +34,6 @@ class EditMovieTest extends TestCase
 	}
 
 	/* @test */
-	public function test_user_cant_get_movie_data_if_movie_slug_is_valid_but_movie_doesnt_belongs_to_user()
-	{
-		$this->withExceptionHandling();
-
-		$other_user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
-
-		$response = $this->getJson(route('movies.show', $movie->slug));
-
-		$response->assertStatus(403);
-	}
-
-	/* @test */
 	public function test_user_cant_get_movie_data_if_movie_slug_is_valid_and_movie_belongs_to_user()
 	{
 		$this->withExceptionHandling();
@@ -95,30 +81,6 @@ class EditMovieTest extends TestCase
 	}
 
 	/* @test */
-	public function test_user_cant_update_movie_if_movie_slug_is_valid_but_it_doesnt_belongs_to_user()
-	{
-		$this->withExceptionHandling();
-
-		$other_user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
-		$genre1 = Genre::create(['name' => 'Genre 1']);
-		$genre2 = Genre::create(['name' => 'Genre 2']);
-
-		$response = $this->postJson(route('movies.update', $movie->slug), [
-			'title_en'          => 'New title',
-			'title_ka'          => 'ახალი სათაური',
-			'description_en'    => 'New description',
-			'description_ka'    => 'ახალი აღწერა',
-			'director_en'       => 'New director',
-			'director_ka'       => 'ახალი დირექტორი',
-			'genres'            => json_encode([$genre1->id, $genre2->id]),
-		]);
-
-		$response->assertStatus(403);
-	}
-
-	/* @test */
 	public function test_user_can_update_movie_if_movie_slug_and_request_data_and_user_is_valid()
 	{
 		$movie = Movie::factory()->create(['user_id' => auth()->id()]);
@@ -148,20 +110,6 @@ class EditMovieTest extends TestCase
 		$response = $this->deleteJson(route('movies.destroy', 'incorrect-slug'));
 
 		$response->assertStatus(404);
-	}
-
-	/* @test */
-	public function test_user_cant_delete_movie_if_slug_is_valid_but_it_doesnt_belongs_to_user()
-	{
-		$this->withExceptionHandling();
-
-		$other_user = User::factory()->create(['password' => bcrypt('password')]);
-
-		$movie = Movie::factory()->create(['user_id' => $other_user->id]);
-
-		$response = $this->deleteJson(route('movies.destroy', $movie->slug));
-
-		$response->assertStatus(403);
 	}
 
 	/* @test */

@@ -29,7 +29,6 @@ class UpdateQuoteRequest extends FormRequest
 			'movie_id'      => 'required',
 			'thumbnail'     => 'image',
 			'user_id'       => '',
-			'title'         => '',
 		];
 	}
 
@@ -37,10 +36,6 @@ class UpdateQuoteRequest extends FormRequest
 	{
 		$this->merge([
 			'user_id' => auth()->id(),
-			'title'   => [
-				'en' => $this['title_en'],
-				'ka' => $this['title_ka'],
-			],
 		]);
 	}
 }
